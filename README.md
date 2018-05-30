@@ -17,7 +17,7 @@ minimal error handling library for clojure
 
 ### err-let
 
-```
+```clj
 (require '[merr.core :as merr])
 
 (defn gen-odd-num []
