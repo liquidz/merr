@@ -1,83 +1,122 @@
 (ns merr.core-test
-  (:require #?(:clj  [clojure.test :refer :all]
-               :cljs [cljs.test :refer-macros [deftest is are testing]])
-            [merr.core :as sut]))
+  (:require #?@(:clj  [[clojure.test :refer :all]
+                       [merr.core :as sut]]
+                :cljs [[cljs.test :refer-macros [deftest is are testing]]
+                       [merr.core :as sut :include-macros true]])))
 
 (deftest ok-test
-  (is (= (sut/ok) [{} nil]))
-  (is (= (sut/ok true) [true nil])))
+  (are [x y] (= x y)
+    [sut/default-value nil] (sut/ok)
+    [true nil]              (sut/ok true)
+    [true nil]              (sut/ok (sut/ok true))
+    [[true nil] nil]        (sut/ok [true nil])))
 
 (deftest err-test
-  (is (= (sut/err) [nil {}]))
-  (is (= (sut/err true) [nil true])))
+  (are [x y] (= x y)
+    [nil sut/default-value] (sut/err)
+    [nil true]              (sut/err true)
+    [nil true]              (sut/err (sut/err true))
+    [nil [nil true]]        (sut/err [nil true])))
 
 (deftest result?-test
-  (is (sut/result? (sut/ok)))
-  (is (sut/result? (sut/err)))
-  (is (not (sut/result? [true nil])))
-  (is (not (sut/result? [nil true]))))
+  (are [x y] (= x (sut/result? y))
+    true  (sut/ok)
+    true  (sut/err)
+    false (vec (sut/ok))
+    false (vec (sut/err))))
 
-(deftest wrap-test
+(deftest ok?-test
+  (are [x y] (= x (sut/ok? y))
+    true  (sut/ok)
+    true  (sut/ok 1)
+    false (sut/err)
+    false (sut/err 1)
+    false (vec (sut/ok))
+    false (vec (sut/err))))
+
+(deftest err?-test
+  (are [x y] (= x (sut/err? y))
+    true  (sut/err)
+    true  (sut/err 1)
+    false (sut/ok)
+    false (sut/ok 1)
+    false (vec (sut/err))
+    false (vec (sut/ok))))
+
+(deftest result-test
   (are [x y] (= x y)
-    (sut/ok true) (sut/wrap true)
-    (sut/ok true) (sut/wrap true "ERR")
-    (sut/err) (sut/wrap nil)
-    (sut/err "ERR") (sut/wrap nil "ERR")
+    (sut/ok true)   (sut/result true)
+    (sut/ok true)   (sut/result true "ERR")
+    (sut/err)       (sut/result nil)
+    (sut/err "ERR") (sut/result nil "ERR")
+    (sut/err "ERR") (sut/result nil (sut/err "ERR"))
+    (sut/ok)        (sut/result (sut/ok))
+    (sut/err)       (sut/result (sut/err))))
 
-    (sut/ok) (sut/wrap (sut/ok))
-    (sut/err) (sut/wrap (sut/err))))
+(deftest result-if-test
+  (are [x y] (= x y)
+    (sut/ok 1)      (sut/result-if 1 odd?)
+    (sut/ok 1)      (sut/result-if (sut/ok 1) (constantly true))
+    (sut/err)       (sut/result-if (sut/ok 1) (constantly false))
+    (sut/err)       (sut/result-if 1 even?)
+    (sut/err "ERR") (sut/result-if 1 even? "ERR")
+    (sut/err "ERR") (sut/result-if 1 even? (sut/err "ERR"))))
 
-(deftest unwrap-test
-  (are [x y] (= x (sut/unwrap y))
-    "OK" (sut/ok "OK")
-    nil (sut/err "ERR")))
-
-(deftest err-let-success-test
-  (sut/err-let +err+ [foo 1
-                      bar (inc foo)]
+(deftest abort-let-success-test
+  (sut/abort-let +err+ [foo 1
+                        bar (inc foo)]
     (is (= foo 1))
     (is (= bar 2))
     (is (nil? +err+)))
 
-  (sut/err-let +err+ [foo (sut/ok 1)]
+  (sut/abort-let +err+ [foo (sut/ok 1)]
     (is (= foo (sut/ok 1)))
     (is (nil? +err+)))
 
-  (sut/err-let +err+ [foo ^:merr (sut/ok 1)
-                      bar (inc foo)]
+  (sut/abort-let +err+ [foo ^:result (sut/ok 1)
+                        bar (inc foo)]
     (is (= foo 1))
     (is (= bar 2))
     (is (nil? +err+))))
 
-(deftest err-let-failure-test
-  (sut/err-let +err+ [foo ^:merr (sut/err "ERR")]
+(deftest abort-let-failure-test
+  (sut/abort-let +err+ [foo ^:result (sut/err "ERR")]
     (is (nil? foo))
     (is (= +err+ "ERR")))
 
-  (sut/err-let +err+ [foo ^:merr (sut/err "ERR")
-                      bar ^:merr (sut/ok true)]
+  (sut/abort-let +err+ [foo ^:result (sut/err "ERR")
+                        bar ^:result (sut/ok true)]
     (is (nil? foo))
     (is (nil? bar))
     (is (= +err+ "ERR")))
 
-  (sut/err-let +err+ [foo ^:merr (sut/err "ERR")
-                      bar true]
+  (sut/abort-let +err+ [foo ^:result (sut/err "ERR")
+                        bar true]
     (is (nil? foo))
     (is (nil? bar))
     (is (= +err+ "ERR"))))
 
-(deftest err->-test
-  (letfn [(fail [_ msg] (sut/err msg))]
-    (are [x y] (= x y)
-      (sut/ok 2) (sut/err-> 1 inc)
-      (sut/ok 2) (sut/err-> 5 (- 3))
-      (sut/err "ERR") (sut/err-> 1 (fail "ERR") inc)
-      (sut/err "ERR") (sut/err-> (sut/err "ERR") inc))))
+(deftest result-let-test
+  (are [x y] (= x y)
+    (sut/ok 1)      (sut/result-let [foo 1] foo)
+    (sut/ok 1)      (sut/result-let [foo 1] (sut/ok foo))
+    (sut/err)       (sut/result-let [foo nil] foo)
+    (sut/err "ERR") (sut/result-let [foo ^:result (sut/err "ERR")] foo)
+    (sut/err "ERR") (sut/result-let [foo ^:result (sut/err "ERR") bar 1] bar)
+    (sut/err)       (sut/result-let [foo 1] (sut/err))))
 
-(deftest err->>-test
-  (letfn [(fail [msg _] (sut/err msg))]
-    (are [x y] (= x y)
-      (sut/ok 2) (sut/err->> 1 inc)
-      (sut/ok -2) (sut/err->> 5 (- 3))
-      (sut/err "ERR") (sut/err->> 1 (fail "ERR") inc)
-      (sut/err "ERR") (sut/err->> (sut/err "ERR") inc))))
+;; (deftest err->-test
+;;   (letfn [(fail [_ msg] (sut/err msg))]
+;;     (are [x y] (= x y)
+;;       (sut/ok 2) (sut/err-> 1 inc)
+;;       (sut/ok 2) (sut/err-> 5 (- 3))
+;;       (sut/err "ERR") (sut/err-> 1 (fail "ERR") inc)
+;;       (sut/err "ERR") (sut/err-> (sut/err "ERR") inc))))
+
+;; (deftest err->>-test
+;;   (letfn [(fail [msg _] (sut/err msg))]
+;;     (are [x y] (= x y)
+;;       (sut/ok 2) (sut/err->> 1 inc)
+;;       (sut/ok -2) (sut/err->> 5 (- 3))
+;;       (sut/err "ERR") (sut/err->> 1 (fail "ERR") inc)
+;;       (sut/err "ERR") (sut/err->> (sut/err "ERR") inc))))

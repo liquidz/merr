@@ -1,6 +1,6 @@
 # merr
 
-minimal error handling library for clojure
+Minimal error handling library for Clojure/ClojureScript
 
 **THIS PROJECT IS WORK IN PROGRESS**
 
@@ -8,7 +8,6 @@ minimal error handling library for clojure
 
 * explicit
 * no magic
-* no monad
 
 ## Usage
 

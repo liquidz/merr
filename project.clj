@@ -13,9 +13,9 @@
 
   :aliases
   {"test-cljs" ["with-profile" "test" "doo" "rhino" "test" "once"]
-            "test-all"  ["do" ["test"] ["test-cljs"]]}
+   "test-all"  ["do" ["test"] ["test-cljs"]]}
   :profiles
-  {:test {:dependencies [[org.mozilla/rhino "1.7.7"]]
+  {:test {:dependencies [[org.mozilla/rhino "1.7.10"]]
           :cljsbuild
           {:builds
            {:test
