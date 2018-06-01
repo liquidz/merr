@@ -8,6 +8,7 @@
   (are [x y] (= x y)
     [sut/default-value nil] (sut/ok)
     [true nil]              (sut/ok true)
+    [nil nil]               (sut/ok nil)
     [true nil]              (sut/ok (sut/ok true))
     [[true nil] nil]        (sut/ok [true nil])))
 
@@ -17,6 +18,9 @@
     [nil true]              (sut/err true)
     [nil true]              (sut/err (sut/err true))
     [nil [nil true]]        (sut/err [nil true])))
+
+(deftest err-nil-test
+  (is (thrown? #?(:clj AssertionError :cljs js/Error) (sut/err nil))))
 
 (deftest result?-test
   (are [x y] (= x (sut/result? y))
@@ -29,6 +33,7 @@
   (are [x y] (= x (sut/ok? y))
     true  (sut/ok)
     true  (sut/ok 1)
+    true  (sut/ok nil)
     false (sut/err)
     false (sut/err 1)
     false (vec (sut/ok))
@@ -40,6 +45,7 @@
     true  (sut/err 1)
     false (sut/ok)
     false (sut/ok 1)
+    false (sut/ok nil)
     false (vec (sut/err))
     false (vec (sut/ok))))
 
@@ -53,14 +59,14 @@
     (sut/ok)        (sut/result (sut/ok))
     (sut/err)       (sut/result (sut/err))))
 
-(deftest result-if-test
+(deftest ok-if-test
   (are [x y] (= x y)
-    (sut/ok 1)      (sut/result-if 1 odd?)
-    (sut/ok 1)      (sut/result-if (sut/ok 1) (constantly true))
-    (sut/err)       (sut/result-if (sut/ok 1) (constantly false))
-    (sut/err)       (sut/result-if 1 even?)
-    (sut/err "ERR") (sut/result-if 1 even? "ERR")
-    (sut/err "ERR") (sut/result-if 1 even? (sut/err "ERR"))))
+    (sut/ok 1)      (sut/ok-if 1 odd?)
+    (sut/ok 1)      (sut/ok-if (sut/ok 1) (constantly true))
+    (sut/err)       (sut/ok-if (sut/ok 1) (constantly false))
+    (sut/err)       (sut/ok-if 1 even?)
+    (sut/err "ERR") (sut/ok-if 1 even? "ERR")
+    (sut/err "ERR") (sut/ok-if 1 even? (sut/err "ERR"))))
 
 (deftest abort-let-success-test
   (sut/abort-let +err+ [foo 1
