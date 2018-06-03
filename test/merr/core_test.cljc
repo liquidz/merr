@@ -111,6 +111,13 @@
     (sut/err "ERR") (sut/result-let [foo ^:result (sut/err "ERR") bar 1] bar)
     (sut/err)       (sut/result-let [foo 1] (sut/err))))
 
+(deftest err-or-ok-test
+  (are [x y] (= x y)
+    (sut/err "ERR") (sut/err-or-ok "ERR" "OK")
+    (sut/err "ERR") (sut/err-or-ok (sut/err "ERR") "OK")
+    (sut/ok "OK")   (sut/err-or-ok nil "OK")
+    (sut/ok "OK")   (sut/err-or-ok nil (sut/ok "OK"))))
+
 ;; (deftest err->-test
 ;;   (letfn [(fail [_ msg] (sut/err msg))]
 ;;     (are [x y] (= x y)

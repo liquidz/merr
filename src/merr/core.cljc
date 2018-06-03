@@ -48,7 +48,27 @@
      (ok x)
      (err err-value))))
 
+(defn ok-or-err [x y]
+  (if x (ok x) (err y)))
+
+(defn err-or-ok [x y]
+  (if x (err x) (ok y)))
+
 ;; TODO: abort-let と result-let の名前でもっと良いのがあれば変更したい
+
+
+(defmacro err-let
+  {:style/indent 2}
+  [err-sym bindings & body]
+  (let [bindings (->> (partition 2 bindings)
+                      (mapcat (fn [[k v]]
+                                [[k err-sym]
+                                 `(if (nil? ~err-sym)
+                                    (let [x# ~v]
+                                      (if (result? x#)
+                                        x# [x# ~err-sym]))
+                                    [nil ~err-sym]) ])))]
+    `(let [~err-sym nil ~@bindings] ~@body)))
 
 (defmacro abort-let
   {:style/indent 2}
@@ -67,6 +87,7 @@
   [bindings & body]
   `(abort-let err# ~bindings
      (if err# (err err#) (result (do ~@body)))))
+
 
 ;; (defmacro ->ok? [v form]
 ;;   `(if (ok? ~v) (-> ~v unwrap ~form wrap) ~v))
