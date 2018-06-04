@@ -20,12 +20,15 @@ Minimal error handling library for Clojure/ClojureScript
 (require '[merr.core :as merr])
 
 (defn gen-odd-num []
-  (let [n (rand-int 10)]
-    (if (odd? n)
-      (merr/ok n)
-      (merr/err))))
+  (merr/ok-if (rand-int 10) odd?))
 
-(merr/err-let +err+ [n ^:merr (gen-odd-num)
+(defn sum-odd-num []
+  (merr/err-let +err+ [x (gen-odd-num)
+                       y (gen-odd-num)
+                       z (+ x y)]
+    (merr/err-or-ok +err+ z)))
+
+(merr/err-let +err+ [n (sum-odd-num)
                      m (inc n)]
   (if +err+
     "Failed to generate odd number"

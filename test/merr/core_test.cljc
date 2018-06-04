@@ -68,48 +68,48 @@
     (sut/err "ERR") (sut/ok-if 1 even? "ERR")
     (sut/err "ERR") (sut/ok-if 1 even? (sut/err "ERR"))))
 
-(deftest abort-let-success-test
-  (sut/abort-let +err+ [foo 1
-                        bar (inc foo)]
-    (is (= foo 1))
-    (is (= bar 2))
-    (is (nil? +err+)))
-
-  (sut/abort-let +err+ [foo (sut/ok 1)]
-    (is (= foo (sut/ok 1)))
-    (is (nil? +err+)))
-
-  (sut/abort-let +err+ [foo ^:result (sut/ok 1)
-                        bar (inc foo)]
-    (is (= foo 1))
-    (is (= bar 2))
-    (is (nil? +err+))))
-
-(deftest abort-let-failure-test
-  (sut/abort-let +err+ [foo ^:result (sut/err "ERR")]
-    (is (nil? foo))
-    (is (= +err+ "ERR")))
-
-  (sut/abort-let +err+ [foo ^:result (sut/err "ERR")
-                        bar ^:result (sut/ok true)]
-    (is (nil? foo))
-    (is (nil? bar))
-    (is (= +err+ "ERR")))
-
-  (sut/abort-let +err+ [foo ^:result (sut/err "ERR")
-                        bar true]
-    (is (nil? foo))
-    (is (nil? bar))
-    (is (= +err+ "ERR"))))
-
-(deftest result-let-test
-  (are [x y] (= x y)
-    (sut/ok 1)      (sut/result-let [foo 1] foo)
-    (sut/ok 1)      (sut/result-let [foo 1] (sut/ok foo))
-    (sut/err)       (sut/result-let [foo nil] foo)
-    (sut/err "ERR") (sut/result-let [foo ^:result (sut/err "ERR")] foo)
-    (sut/err "ERR") (sut/result-let [foo ^:result (sut/err "ERR") bar 1] bar)
-    (sut/err)       (sut/result-let [foo 1] (sut/err))))
+; (deftest abort-let-success-test
+;   (sut/abort-let +err+ [foo 1
+;                         bar (inc foo)]
+;     (is (= foo 1))
+;     (is (= bar 2))
+;     (is (nil? +err+)))
+;
+;   (sut/abort-let +err+ [foo (sut/ok 1)]
+;     (is (= foo (sut/ok 1)))
+;     (is (nil? +err+)))
+;
+;   (sut/abort-let +err+ [foo ^:result (sut/ok 1)
+;                         bar (inc foo)]
+;     (is (= foo 1))
+;     (is (= bar 2))
+;     (is (nil? +err+))))
+;
+; (deftest abort-let-failure-test
+;   (sut/abort-let +err+ [foo ^:result (sut/err "ERR")]
+;     (is (nil? foo))
+;     (is (= +err+ "ERR")))
+;
+;   (sut/abort-let +err+ [foo ^:result (sut/err "ERR")
+;                         bar ^:result (sut/ok true)]
+;     (is (nil? foo))
+;     (is (nil? bar))
+;     (is (= +err+ "ERR")))
+;
+;   (sut/abort-let +err+ [foo ^:result (sut/err "ERR")
+;                         bar true]
+;     (is (nil? foo))
+;     (is (nil? bar))
+;     (is (= +err+ "ERR"))))
+;
+; (deftest result-let-test
+;   (are [x y] (= x y)
+;     (sut/ok 1)      (sut/result-let [foo 1] foo)
+;     (sut/ok 1)      (sut/result-let [foo 1] (sut/ok foo))
+;     (sut/err)       (sut/result-let [foo nil] foo)
+;     (sut/err "ERR") (sut/result-let [foo ^:result (sut/err "ERR")] foo)
+;     (sut/err "ERR") (sut/result-let [foo ^:result (sut/err "ERR") bar 1] bar)
+;     (sut/err)       (sut/result-let [foo 1] (sut/err))))
 
 (deftest err-or-ok-test
   (are [x y] (= x y)
@@ -117,6 +117,31 @@
     (sut/err "ERR") (sut/err-or-ok (sut/err "ERR") "OK")
     (sut/ok "OK")   (sut/err-or-ok nil "OK")
     (sut/ok "OK")   (sut/err-or-ok nil (sut/ok "OK"))))
+
+(deftest err-let-test
+  (testing "succeeded"
+    (sut/err-let +err+ [foo 1
+                        bar (inc foo)]
+      (is (= foo 1))
+      (is (= bar 2))
+      (is (nil? +err+)))
+
+    (sut/err-let +err+ [foo (sut/ok 1)
+                        bar (inc foo)]
+      (is (= foo 1))
+      (is (= bar 2))
+      (is (nil? +err+))))
+
+  (testing "failure"
+    (sut/err-let +err+ [foo (sut/err "ERR")
+                        bar (inc foo)]
+      (is (nil? foo))
+      (is (nil? bar))
+      (is (= +err+ "ERR"))))
+  )
+
+; (macroexpand-1 '(sut/err-let +err+ [foo (sut/ok 1)] foo))
+; (macroexpand-1 '(sut/err-let +err+ [foo ^:result (sut/ok 1)] foo))
 
 ;; (deftest err->-test
 ;;   (letfn [(fail [_ msg] (sut/err msg))]
