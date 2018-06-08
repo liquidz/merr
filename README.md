@@ -1,6 +1,8 @@
 # merr
+[![CircleCI](https://circleci.com/gh/liquidz/merr.svg?style=svg)](https://circleci.com/gh/liquidz/merr)
 
 Minimal error handling library for Clojure/ClojureScript
+
 This library is based on ["Good Enough" error handling in Clojure](https://adambard.com/blog/acceptable-error-handling-in-clojure/).
 
 **THIS PROJECT IS WORK IN PROGRESS**
