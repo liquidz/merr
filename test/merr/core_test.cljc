@@ -49,24 +49,31 @@
     false (vec (sut/err))
     false (vec (sut/ok))))
 
-(deftest result-test
-  (are [x y] (= x y)
-    (sut/ok true)   (sut/result true)
-    (sut/ok true)   (sut/result true "ERR")
-    (sut/err)       (sut/result nil)
-    (sut/err "ERR") (sut/result nil "ERR")
-    (sut/err "ERR") (sut/result nil (sut/err "ERR"))
-    (sut/ok)        (sut/result (sut/ok))
-    (sut/err)       (sut/result (sut/err))))
+;; (deftest result-test
+;;   (are [x y] (= x y)
+;;     (sut/ok true)   (sut/result true)
+;;     (sut/ok true)   (sut/result true "ERR")
+;;     (sut/err)       (sut/result nil)
+;;     (sut/err "ERR") (sut/result nil "ERR")
+;;     (sut/err "ERR") (sut/result nil (sut/err "ERR"))
+;;     (sut/ok)        (sut/result (sut/ok))
+;;     (sut/err)       (sut/result (sut/err))))
 
-(deftest ok-if-test
+;; (deftest ok-if-test
+;;   (are [x y] (= x y)
+;;     (sut/ok 1)      (sut/ok-if 1 odd?)
+;;     (sut/ok 1)      (sut/ok-if (sut/ok 1) (constantly true))
+;;     (sut/err)       (sut/ok-if (sut/ok 1) (constantly false))
+;;     (sut/err)       (sut/ok-if 1 even?)
+;;     (sut/err "ERR") (sut/ok-if 1 even? "ERR")
+;;     (sut/err "ERR") (sut/ok-if 1 even? (sut/err "ERR"))))
+
+(deftest ok-or-err-test
   (are [x y] (= x y)
-    (sut/ok 1)      (sut/ok-if 1 odd?)
-    (sut/ok 1)      (sut/ok-if (sut/ok 1) (constantly true))
-    (sut/err)       (sut/ok-if (sut/ok 1) (constantly false))
-    (sut/err)       (sut/ok-if 1 even?)
-    (sut/err "ERR") (sut/ok-if 1 even? "ERR")
-    (sut/err "ERR") (sut/ok-if 1 even? (sut/err "ERR"))))
+    (sut/ok "OK")   (sut/ok-or-err "OK" "ERR")
+    (sut/ok "OK")   (sut/ok-or-err (sut/ok "OK") "ERR")
+    (sut/err "ERR") (sut/ok-or-err nil "ERR")
+    (sut/err "ERR") (sut/ok-or-err nil (sut/err "ERR"))))
 
 (deftest err-or-ok-test
   (are [x y] (= x y)
@@ -89,3 +96,15 @@
       (is (nil? foo))
       (is (nil? bar))
       (is (= +err+ "ERR")))))
+
+(comment
+
+  (macroexpand-1 '(sut/err-let +err+ [x 1] x))
+  (macroexpand-1 '(sut/err-let +err+ [x "foo"] x))
+  (macroexpand-1 '(sut/err-let +err+ [x (sut/ok 1)] x))
+  (macroexpand-1 '(sut/err-let +err+ [x (sut/err 1)] x))
+  (macroexpand-1 '(sut/err-let +err+ [x (do-something 1)] x))
+  (macroexpand-1 '(sut/err-let +err+ [x ^:result (do-something 1)] x))
+  (macroexpand-1 '(sut/err-let +err+ [x ^:value (do-something 1)] x))
+
+  )

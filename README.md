@@ -5,10 +5,10 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 
 **THIS PROJECT IS WORK IN PROGRESS**
 
-## Philosophy
+## Concept
 
-* explicit
-* no magic
+* Easy to imagine behavior
+* Minimum to remember
 
 ## Usage
 
@@ -18,22 +18,20 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 ### err-let
 
 ```clj
-(require '[merr.core :as merr])
+(require '[merr.core :as m])
 
 (defn gen-odd-num []
-  (merr/ok-if (rand-int 10) odd?))
+  (let [n (rand-int 10)]
+    (if (odd? n)
+      (m/ok n)
+      (m/err :even-number))))
 
-(defn sum-odd-num []
-  (merr/err-let +err+ [x (gen-odd-num)
-                       y (gen-odd-num)
-                       z (+ x y)]
-    (merr/err-or-ok +err+ z)))
-
-(merr/err-let +err+ [n (sum-odd-num)
-                     m (inc n)]
+(m/err-let +err+ [n (gen-odd-num)
+                  m (gen-odd-num)
+                  x (+ n m)]
   (if +err+
     "Failed to generate odd number"
-    (str "n: " n ", m: " m)))
+    (str "n: " n ", m: " m ", x: " x)))
 ```
 
 ## License
