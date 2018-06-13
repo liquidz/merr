@@ -17,20 +17,22 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 * Clojars
   * TODO
 
-### err-let
+### let
 
 ```clj
-(require '[merr.core :as m])
+(require '[merr.core :as merr])
+;; For clojurescript
+;; (require '[merr.core :as merr :include-macros true])
 
 (defn gen-odd-num []
   (let [n (rand-int 10)]
     (if (odd? n)
-      (m/ok n)
-      (m/err :even-number))))
+      (merr/ok n)
+      (merr/err :even-number))))
 
-(m/err-let +err+ [n (gen-odd-num)
-                  m (gen-odd-num)
-                  x (+ n m)]
+(merr/let +err+ [n (gen-odd-num)
+                 m (gen-odd-num)
+                 x (+ n m)]
   (if +err+
     "Failed to generate odd number"
     (str "n: " n ", m: " m ", x: " x)))

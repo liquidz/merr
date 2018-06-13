@@ -82,29 +82,33 @@
     (sut/ok "OK")   (sut/err-or-ok nil "OK")
     (sut/ok "OK")   (sut/err-or-ok nil (sut/ok "OK"))))
 
-(deftest err-let-test
+(deftest let-test
   (testing "succeeded"
-    (sut/err-let +err+ [foo (sut/ok 1)
-                        bar (inc foo)]
+    (sut/let +err+ [foo (sut/ok 1)
+                    bar (inc foo)]
       (is (= foo 1))
       (is (= bar 2))
       (is (nil? +err+))))
 
   (testing "failed"
-    (sut/err-let +err+ [foo (sut/err "ERR")
-                        bar (inc foo)]
+    (sut/let +err+ [foo (sut/err "ERR")
+                    bar (inc foo)]
       (is (nil? foo))
       (is (nil? bar))
-      (is (= +err+ "ERR")))))
+      (is (= +err+ "ERR"))))
+
+  (testing "clojure.core/let"
+    (let [foo (sut/ok 1)]
+      (is (= foo [1 nil])))))
 
 (comment
 
-  (macroexpand-1 '(sut/err-let +err+ [x 1] x))
-  (macroexpand-1 '(sut/err-let +err+ [x "foo"] x))
-  (macroexpand-1 '(sut/err-let +err+ [x (sut/ok 1)] x))
-  (macroexpand-1 '(sut/err-let +err+ [x (sut/err 1)] x))
-  (macroexpand-1 '(sut/err-let +err+ [x (do-something 1)] x))
-  (macroexpand-1 '(sut/err-let +err+ [x ^:result (do-something 1)] x))
-  (macroexpand-1 '(sut/err-let +err+ [x ^:value (do-something 1)] x))
+  (macroexpand-1 '(sut/let +err+ [x 1] x))
+  (macroexpand-1 '(sut/let +err+ [x "foo"] x))
+  (macroexpand-1 '(sut/let +err+ [x (sut/ok 1)] x))
+  (macroexpand-1 '(sut/let +err+ [x (sut/err 1)] x))
+  (macroexpand-1 '(sut/let +err+ [x (do-something 1)] x))
+  (macroexpand-1 '(sut/let +err+ [x ^:result (do-something 1)] x))
+  (macroexpand-1 '(sut/let +err+ [x ^:value (do-something 1)] x))
 
   )

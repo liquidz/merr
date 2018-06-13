@@ -1,4 +1,5 @@
-(ns merr.core)
+(ns merr.core
+  (:refer-clojure :rename {let core-let}))
 
 (def default-value true)
 (defn- ok*  [x] ^:merr/result ^:merr/ok  [x nil])
@@ -63,7 +64,7 @@
        (-> v first resolve result?))))
 
 (defn- categorize [v]
-  (let [m (meta v)]
+  (core-let [m (meta v)]
     (cond
       (number? v) :prim
       (string? v) :prim
@@ -72,16 +73,17 @@
       (:result m) :result
       :else       :auto)))
 
-(defmacro err-let
+(defmacro let
+  "FIXME"
   {:style/indent 2}
   [err-sym bindings & body]
-  (let [bindings (->> (partition 2 bindings)
-                      (mapcat (fn [[k v]]
-                                (case (categorize v)
-                                  :prim   [k v]
-                                  :value  [k `(when (nil? ~err-sym) ~v)]
-                                  :result [[k err-sym] `(if (nil? ~err-sym) ~v [nil ~err-sym])]
-                                  [[k err-sym] `(if (nil? ~err-sym)
-                                                  (let [v# ~v] (if (result? v#) v# [v# nil]))
-                                                  [nil ~err-sym])]))))]
-    `(let [~err-sym nil ~@bindings] ~@body)))
+  (core-let [bindings (->> (partition 2 bindings)
+                           (mapcat (fn [[k v]]
+                                     (case (categorize v)
+                                       :prim   [k v]
+                                       :value  [k `(when (nil? ~err-sym) ~v)]
+                                       :result [[k err-sym] `(if (nil? ~err-sym) ~v [nil ~err-sym])]
+                                       [[k err-sym] `(if (nil? ~err-sym)
+                                                       (core-let [v# ~v] (if (result? v#) v# [v# nil]))
+                                                       [nil ~err-sym])]))))]
+    `(core-let [~err-sym nil ~@bindings] ~@body)))
