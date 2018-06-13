@@ -49,25 +49,6 @@
     false (vec (sut/err))
     false (vec (sut/ok))))
 
-;; (deftest result-test
-;;   (are [x y] (= x y)
-;;     (sut/ok true)   (sut/result true)
-;;     (sut/ok true)   (sut/result true "ERR")
-;;     (sut/err)       (sut/result nil)
-;;     (sut/err "ERR") (sut/result nil "ERR")
-;;     (sut/err "ERR") (sut/result nil (sut/err "ERR"))
-;;     (sut/ok)        (sut/result (sut/ok))
-;;     (sut/err)       (sut/result (sut/err))))
-
-;; (deftest ok-if-test
-;;   (are [x y] (= x y)
-;;     (sut/ok 1)      (sut/ok-if 1 odd?)
-;;     (sut/ok 1)      (sut/ok-if (sut/ok 1) (constantly true))
-;;     (sut/err)       (sut/ok-if (sut/ok 1) (constantly false))
-;;     (sut/err)       (sut/ok-if 1 even?)
-;;     (sut/err "ERR") (sut/ok-if 1 even? "ERR")
-;;     (sut/err "ERR") (sut/ok-if 1 even? (sut/err "ERR"))))
-
 (deftest ok-or-err-test
   (are [x y] (= x y)
     (sut/ok "OK")   (sut/ok-or-err "OK" "ERR")

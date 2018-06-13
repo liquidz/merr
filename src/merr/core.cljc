@@ -32,22 +32,6 @@
   ([x] {:pre [(some? x)]}
    (cond-> x (not (err? x)) err*)))
 
-;; (defn ^:merr/result result
-;;   ""
-;;   ([x] (result x default-value))
-;;   ([x err-value]
-;;    (cond
-;;      (result? x) x
-;;      (some? x) (ok x)
-;;      :else (err err-value))))
-
-;; (defn ^:merr/result ok-if
-;;   ([x pred] (ok-if x pred default-value))
-;;   ([x pred err-value]
-;;    (if (pred x)
-;;      (ok x)
-;;      (err err-value))))
-
 (defn ^:merr/result ok-or-err
   ""
   [ok-val err-val]
