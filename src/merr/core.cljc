@@ -1,7 +1,7 @@
 (ns merr.core
   (:refer-clojure :rename {let core-let}))
 
-(def default-value true)
+(def ^:private default-value true)
 (defn- ok*  [x] ^:merr/result ^:merr/ok  [x nil])
 (defn- err* [x] ^:merr/result ^:merr/err [nil x])
 

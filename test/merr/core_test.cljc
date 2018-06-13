@@ -6,18 +6,18 @@
 
 (deftest ok-test
   (are [x y] (= x y)
-    [sut/default-value nil] (sut/ok)
-    [true nil]              (sut/ok true)
-    [nil nil]               (sut/ok nil)
-    [true nil]              (sut/ok (sut/ok true))
-    [[true nil] nil]        (sut/ok [true nil])))
+    [true nil]       (sut/ok)
+    [true nil]       (sut/ok true)
+    [nil nil]        (sut/ok nil)
+    [true nil]       (sut/ok (sut/ok true))
+    [[true nil] nil] (sut/ok [true nil])))
 
 (deftest err-test
   (are [x y] (= x y)
-    [nil sut/default-value] (sut/err)
-    [nil true]              (sut/err true)
-    [nil true]              (sut/err (sut/err true))
-    [nil [nil true]]        (sut/err [nil true])))
+    [nil true]       (sut/err)
+    [nil true]       (sut/err true)
+    [nil true]       (sut/err (sut/err true))
+    [nil [nil true]] (sut/err [nil true])))
 
 (deftest err-nil-test
   (is (thrown? #?(:clj AssertionError :cljs js/Error) (sut/err nil))))
