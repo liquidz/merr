@@ -6,38 +6,41 @@
 (defn- err* [x] ^:merr/result ^:merr/err [nil x])
 
 (defn result?
-  "Returns true if x is a merr/result"
+  "Returns true if x is a merr/result."
   [x]
   (-> x meta :merr/result true?))
 
 (defn ok?
-  "Returns true if x is Ok result"
+  "Returns true if x is Ok result."
   [x]
   (-> x meta :merr/ok true?))
 
 (defn err?
-  "Returns true if x is Error result"
+  "Returns true if x is Error result."
   [x]
   (-> x meta :merr/err true?))
 
 (defn ^:merr/result ok
-  "Returns merr/result value as Ok"
+  "Returns merr/result value as Ok."
   ([] (ok default-value))
   ([x] (cond-> x (not (ok? x)) ok*)))
 
 (defn ^:merr/result err
-  "Returns merr/result value as Error
-  NOTE Error value MUST not be nil"
+  "Returns merr/result value as Error.
+  **NOTE Error value MUST not be nil**"
   ([] (err default-value))
   ([x] {:pre [(some? x)]}
    (cond-> x (not (err? x)) err*)))
 
 (defn ^:merr/result ok-or-err
-  ""
+  "Returns Ok value if ok-val is not nil.
+  Otherwise returns Err value with err-val."
   [ok-val err-val]
   (if ok-val (ok ok-val) (err err-val)))
 
 (defn ^:merr/result err-or-ok
+  "Returns Err value if err-value is not nil.
+  Otherwise return Ok value with ok-val."
   [err-val ok-val]
   (if err-val (err err-val) (ok ok-val)))
 
@@ -58,7 +61,9 @@
       :else       :auto)))
 
 (defmacro let
-  "FIXME"
+  "binding => binding-form init-expr
+   If init-expr is merr's Ok, binding-form bound to the Ok value,
+   if not, err-sym bound to the Err value and rest bindings are skipped."
   {:style/indent 2}
   [err-sym bindings & body]
   (assert (vector? bindings) "a vector for its binding")
