@@ -30,12 +30,10 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
       (merr/ok n)
       (merr/err :even-number))))
 
-(merr/let +err+ [n (gen-odd-num)
-                 m (gen-odd-num)
-                 x (+ n m)]
-  (if +err+
-    "Failed to generate odd number"
-    (str "n: " n ", m: " m ", x: " x)))
+(merr/if-let +err+ [n (gen-odd-num)
+                    m (inc n)]
+  (str "n: " n ", m: " m)
+  "Failed to generate odd number")
 ```
 
 ## License

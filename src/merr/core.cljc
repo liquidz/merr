@@ -1,5 +1,6 @@
 (ns merr.core
-  (:refer-clojure :rename {let core-let}))
+  (:refer-clojure :rename {let core-let
+                           if-let core-if-let}))
 
 (def ^:private default-value true)
 (defn- ok*  [x] ^:merr/result ^:merr/ok  [x nil])
@@ -78,3 +79,17 @@
                                                        (core-let [v# ~v] (if (result? v#) v# [v# nil]))
                                                        [nil ~err-sym])]))))]
     `(core-let [~err-sym nil ~@bindings] ~@body)))
+
+(defmacro if-let
+  "bindings => binding-form init-expr
+   If there is no merr's Err, evaluates then with binding-form,
+   if not, yields else"
+  {:style/indent 2}
+  ([err-sym bindings then]
+   `(if-let ~err-sym ~bindings ~then nil))
+  ([err-sym bindings then else & oldform]
+   (assert (vector? bindings) "a vector for its binding")
+   (assert (nil? oldform) "1 or 2 forms after binding vector")
+   (assert (even? (count bindings)) "an even number of forms in binding vector")
+   `(let ~err-sym ~bindings
+      (if ~err-sym ~else ~then))))

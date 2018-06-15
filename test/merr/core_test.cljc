@@ -82,6 +82,20 @@
     (let [foo (sut/ok 1)]
       (is (= foo [1 nil])))))
 
+(deftest if-let-test
+  (is (= 2 (sut/if-let +err+ [foo (sut/ok 1)
+                              bar (inc foo)]
+             bar)))
+  (is (= 2 (sut/if-let +err+ [foo (sut/ok 1)
+                              bar (inc foo)]
+             bar +err+)))
+  (is (nil? (sut/if-let +err+ [foo (sut/err "ERR")
+                               bar (inc foo)]
+              bar)))
+  (is (= "ERR" (sut/if-let +err+ [foo (sut/err "ERR")
+                                  bar (inc foo)]
+                 bar +err+))))
+
 (comment
 
   (macroexpand-1 '(sut/let +err+ [x 1] x))
