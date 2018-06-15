@@ -77,8 +77,12 @@
                                        :result [[k err-sym] `(if (nil? ~err-sym) ~v [nil ~err-sym])]
                                        [[k err-sym] `(if (nil? ~err-sym)
                                                        (core-let [v# ~v] (if (result? v#) v# [v# nil]))
-                                                       [nil ~err-sym])]))))]
-    `(core-let [~err-sym nil ~@bindings] ~@body)))
+                                                       [nil ~err-sym])]))))
+             err-or-sym (symbol (str "&" err-sym "-or"))]
+            `(core-let [~err-sym nil
+                        ~@bindings
+                        ~err-or-sym (partial err-or-ok ~err-sym)]
+                       ~@body)))
 
 (defmacro if-let
   "bindings => binding-form init-expr

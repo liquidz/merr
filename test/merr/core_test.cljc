@@ -78,6 +78,13 @@
       (is (nil? bar))
       (is (= +err+ "ERR"))))
 
+  (testing "error-or"
+    (are [x y] (= x y)
+      (sut/ok 1)      (sut/let err [foo (sut/ok 1)]
+                        (&err-or foo))
+      (sut/err "ERR") (sut/let err [foo (sut/err "ERR")]
+                        (&err-or foo))))
+
   (testing "clojure.core/let"
     (let [foo (sut/ok 1)]
       (is (= foo [1 nil])))))
