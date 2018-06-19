@@ -20,20 +20,21 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 ### let
 
 ```clj
-(require '[merr.core :as merr])
+(require '[merr.core :as m])
 ;; For clojurescript
-;; (require '[merr.core :as merr :include-macros true])
+;; (require '[merr.core :as m :include-macros true])
 
-(defn gen-odd-num []
-  (let [n (rand-int 10)]
-    (if (odd? n)
-      (merr/ok n)
-      (merr/err :even-number))))
 
-(merr/if-let +err+ [n (gen-odd-num)
-                    m (inc n)]
-  (str "n: " n ", m: " m)
-  "Failed to generate odd number")
+(defn may-fail-inc [n]
+  (if (odd? (rand-int 10))
+    (inc n)
+    (m/err (str "failed to inc: " n))))
+
+(m/if-let err [a 10
+               b (may-fail-inc a)
+               c (may-fail-inc b)]
+  (str "c = " c)
+  @err)
 ```
 
 ## License

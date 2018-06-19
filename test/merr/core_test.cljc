@@ -4,68 +4,31 @@
                 :cljs [[cljs.test :refer-macros [deftest is are testing]]
                        [merr.core :as sut :include-macros true]])))
 
-(deftest ok-test
-  (are [x y] (= x y)
-    [true nil]       (sut/ok)
-    [true nil]       (sut/ok true)
-    [nil nil]        (sut/ok nil)
-    [true nil]       (sut/ok (sut/ok true))
-    [[true nil] nil] (sut/ok [true nil])))
-
 (deftest err-test
   (are [x y] (= x y)
-    [nil true]       (sut/err)
-    [nil true]       (sut/err true)
-    [nil true]       (sut/err (sut/err true))
-    [nil [nil true]] (sut/err [nil true])))
-
-(deftest err-nil-test
-  (is (thrown? #?(:clj AssertionError :cljs js/Error) (sut/err nil))))
-
-(deftest result?-test
-  (are [x y] (= x (sut/result? y))
-    true  (sut/ok)
-    true  (sut/err)
-    false (vec (sut/ok))
-    false (vec (sut/err))))
-
-(deftest ok?-test
-  (are [x y] (= x (sut/ok? y))
-    true  (sut/ok)
-    true  (sut/ok 1)
-    true  (sut/ok nil)
-    false (sut/err)
-    false (sut/err 1)
-    false (vec (sut/ok))
-    false (vec (sut/err))))
+    (sut/->MerrError true)          (sut/err)
+    (sut/->MerrError true)          (sut/err true)
+    (sut/->MerrError nil)           (sut/err nil)
+    (sut/->MerrError true)          (sut/err (sut/err true))
+    (sut/->MerrError {:value true}) (sut/err {:value true})))
 
 (deftest err?-test
   (are [x y] (= x (sut/err? y))
     true  (sut/err)
     true  (sut/err 1)
-    false (sut/ok)
-    false (sut/ok 1)
-    false (sut/ok nil)
-    false (vec (sut/err))
-    false (vec (sut/ok))))
+    false (merge {} (sut/err))
+    false true
+    false false
+    false nil))
 
-(deftest ok-or-err-test
+(deftest deref-test
   (are [x y] (= x y)
-    (sut/ok "OK")   (sut/ok-or-err "OK" "ERR")
-    (sut/ok "OK")   (sut/ok-or-err (sut/ok "OK") "ERR")
-    (sut/err "ERR") (sut/ok-or-err nil "ERR")
-    (sut/err "ERR") (sut/ok-or-err nil (sut/err "ERR"))))
-
-(deftest err-or-ok-test
-  (are [x y] (= x y)
-    (sut/err "ERR") (sut/err-or-ok "ERR" "OK")
-    (sut/err "ERR") (sut/err-or-ok (sut/err "ERR") "OK")
-    (sut/ok "OK")   (sut/err-or-ok nil "OK")
-    (sut/ok "OK")   (sut/err-or-ok nil (sut/ok "OK"))))
+    true  @(sut/err)
+    "ERR" @(sut/err "ERR")))
 
 (deftest let-test
   (testing "succeeded"
-    (sut/let +err+ [foo (sut/ok 1)
+    (sut/let +err+ [foo 1
                     bar (inc foo)]
       (is (= foo 1))
       (is (= bar 2))
@@ -76,32 +39,24 @@
                     bar (inc foo)]
       (is (nil? foo))
       (is (nil? bar))
-      (is (= +err+ "ERR"))))
-
-  (testing "error-or"
-    (are [x y] (= x y)
-      (sut/ok 1)      (sut/let err [foo (sut/ok 1)]
-                        (&err-or foo))
-      (sut/err "ERR") (sut/let err [foo (sut/err "ERR")]
-                        (&err-or foo))))
+      (is (= @+err+ "ERR"))))
 
   (testing "clojure.core/let"
-    (let [foo (sut/ok 1)]
-      (is (= foo [1 nil])))))
+    (let [foo (sut/err 1)]
+      (is (= foo (sut/->MerrError 1))))))
 
 (deftest if-let-test
-  (is (= 2 (sut/if-let +err+ [foo (sut/ok 1)
-                              bar (inc foo)]
-             bar)))
-  (is (= 2 (sut/if-let +err+ [foo (sut/ok 1)
-                              bar (inc foo)]
-             bar +err+)))
-  (is (nil? (sut/if-let +err+ [foo (sut/err "ERR")
-                               bar (inc foo)]
-              bar)))
-  (is (= "ERR" (sut/if-let +err+ [foo (sut/err "ERR")
-                                  bar (inc foo)]
-                 bar +err+))))
+  (are [x y] (= x y)
+    2               (sut/if-let err [foo 1 bar (inc foo)] bar)
+    2               (sut/if-let err [foo 1 bar (inc foo)] bar err)
+    (sut/err "ERR") (sut/if-let err [foo (sut/err "ERR") bar (inc foo)] bar)
+    (sut/err "ERR") (sut/if-let err [foo (sut/err "ERR") bar (inc foo)] bar err)
+    nil             (sut/if-let err [foo (sut/err "ERR") bar (inc foo)] bar nil)))
+
+(deftest when-let-test
+  (are [x y] (= x y)
+    2               (sut/when-let [foo 1 bar (inc foo)] bar)
+    (sut/err "ERR") (sut/when-let [foo (sut/err "ERR") bar (inc foo)] bar)))
 
 (comment
 
