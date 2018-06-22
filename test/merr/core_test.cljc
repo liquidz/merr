@@ -1,8 +1,17 @@
 (ns merr.core-test
   (:require #?@(:clj  [[clojure.test :refer :all]
-                       [merr.core :as sut]]
+                       [merr.core :as sut]
+                       testdoc.core]
                 :cljs [[cljs.test :refer-macros [deftest is are testing]]
                        [merr.core :as sut :include-macros true]])))
+
+#?(:clj
+   (deftest docstring-test
+     (is (testdoc #'sut/err?))
+     (is (testdoc #'sut/err))
+     (is (testdoc #'sut/let))
+     (is (testdoc #'sut/if-let))
+     (is (testdoc #'sut/when-let))))
 
 (deftest err-test
   (are [x y] (= x y)
@@ -57,15 +66,3 @@
   (are [x y] (= x y)
     2               (sut/when-let [foo 1 bar (inc foo)] bar)
     (sut/err "ERR") (sut/when-let [foo (sut/err "ERR") bar (inc foo)] bar)))
-
-(comment
-
-  (macroexpand-1 '(sut/let +err+ [x 1] x))
-  (macroexpand-1 '(sut/let +err+ [x "foo"] x))
-  (macroexpand-1 '(sut/let +err+ [x (sut/ok 1)] x))
-  (macroexpand-1 '(sut/let +err+ [x (sut/err 1)] x))
-  (macroexpand-1 '(sut/let +err+ [x (do-something 1)] x))
-  (macroexpand-1 '(sut/let +err+ [x ^:result (do-something 1)] x))
-  (macroexpand-1 '(sut/let +err+ [x ^:value (do-something 1)] x))
-
-  )

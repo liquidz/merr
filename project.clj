@@ -15,7 +15,8 @@
   {"test-cljs" ["with-profile" "test" "doo" "rhino" "test" "once"]
    "test-all"  ["do" ["test"] ["test-cljs"]]}
   :profiles
-  {:test {:dependencies [[org.mozilla/rhino "1.7.10"]]
+  {:dev {:dependencies [[testdoc "0.1.0-SNAPSHOT"]]}
+   :test {:dependencies [[org.mozilla/rhino "1.7.10"]]
           :cljsbuild
           {:builds
            {:test

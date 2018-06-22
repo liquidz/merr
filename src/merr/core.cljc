@@ -16,11 +16,24 @@
 (defn- err* [x] (->MerrError x))
 
 (defn err?
-  "Returns true if x is Error result."
+  "Returns true if x is Error.
+
+  => (err? \"foo\")
+  false
+
+  => (err? (err \"foo\"))
+  true"
   [x] (instance? MerrError x))
 
+
 (defn err
-  "Returns merr/result value as Error."
+  "Returns value as Error.
+
+  => (type (err \"foo\"))
+  merr.core.MerrError
+
+  => @(err \"foo\")
+  \"foo\""
   ([] (err default-value))
   ([x] (cond-> x (not (err? x)) err*)))
 
@@ -30,8 +43,18 @@
 
 (defmacro let
   "binding => binding-form init-expr
-   If init-expr is merr's Ok, binding-form bound to the Ok value,
-   if not, err-sym bound to the Err value and rest bindings are skipped."
+   If init-expr is not Error, binding-form bound to the value,
+   if not, err-sym bound to the Error value and rest bindings are skipped.
+
+  => (let error [a 1
+  =>             b (inc a)]
+  =>   [b error])
+  [2 nil]
+
+  => (let error [a (err \"ERR\")
+  =>             b (inc a)]
+  =>   [b (err? error)])
+  [nil true]"
   {:style/indent 2}
   [err-sym bindings & body]
   (assert (vector? bindings) "a vector for its binding")
@@ -48,8 +71,23 @@
 
 (defmacro if-let
   "bindings => binding-form init-expr
-   If there is no merr's Err, evaluates then with binding-form,
-   if not, yields else"
+   If there is no Error, evaluates `then` with binding-form,
+   if not, yields `else`.
+
+  => (if-let error [a 1
+  =>                b (inc a)]
+  =>   b (err? error))
+  2
+
+  => (if-let error [a (err \"ERR\")
+  =>                b (inc a)]
+  =>   b :ng)
+  :ng
+
+  => (if-let error [a (err \"ERR\")
+  =>                b (inc a)]
+  =>   b)
+  err?"
   {:style/indent 2}
   ([err-sym bindings then]
    `(if-let ~err-sym ~bindings ~then ~err-sym))
@@ -58,10 +96,22 @@
    (assert (nil? oldform) "1 or 2 forms after binding vector")
    (assert (even? (count bindings)) "an even number of forms in binding vector")
    `(let ~err-sym ~bindings
-         (if ~err-sym ~else ~then))))
+      (if ~err-sym ~else ~then))))
 
 (defmacro when-let
-  "FIXME"
+  "bindings => binding-form init-expr
+   If there is not Error, evaluates body with binding-form,
+   if not, returns Error.
+
+  => (when-let [a 1
+  =>            b (inc a)]
+  =>   b)
+  2
+
+  => (when-let [a (err \"ERR\")
+  =>            b (inc a)]
+  =>   b)
+  err?"
   {:style/indent 1}
   [bindings & body]
   (core-let [err-sym (gensym)]
