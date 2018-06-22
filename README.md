@@ -15,7 +15,9 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 ## Usage
 [![Clojars Project](https://img.shields.io/clojars/v/merr.svg)](https://clojars.org/merr)
 
-### let
+[API Documents](https://cljdoc.xyz/d/merr/merr/0.1.0-SNAPSHOT/api/merr.core)
+
+### example
 
 ```clj
 (require '[merr.core :as merr])
