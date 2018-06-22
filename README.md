@@ -1,7 +1,7 @@
 # merr
 [![CircleCI](https://circleci.com/gh/liquidz/merr.svg?style=svg)](https://circleci.com/gh/liquidz/merr)
 
-Minimal error handling library for Clojure/ClojureScript
+Minimal and good enough error handling library for Clojure/ClojureScript
 
 This library is based on ["Good Enough" error handling in Clojure](https://adambard.com/blog/acceptable-error-handling-in-clojure/).
 
@@ -20,19 +20,19 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 ### let
 
 ```clj
-(require '[merr.core :as m])
+(require '[merr.core :as merr])
 ;; For clojurescript
-;; (require '[merr.core :as m :include-macros true])
+;; (require '[merr.core :as merr :include-macros true])
 
 
 (defn may-fail-inc [n]
   (if (odd? (rand-int 10))
     (inc n)
-    (m/err (str "failed to inc: " n))))
+    (merr/err (str "failed to inc: " n))))
 
-(m/if-let err [a 10
-               b (may-fail-inc a)
-               c (may-fail-inc b)]
+(merr/if-let err [a 10
+                  b (may-fail-inc a)
+                  c (may-fail-inc b)]
   (str "c = " c)
   @err)
 ```
