@@ -13,9 +13,7 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 * Minimum to remember
 
 ## Usage
-
-* Clojars
-  * TODO
+[![Clojars Project](https://img.shields.io/clojars/v/merr.svg)](https://clojars.org/merr)
 
 ### let
 
