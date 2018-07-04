@@ -9,9 +9,7 @@
    (deftest docstring-test
      (is (testdoc #'sut/err?))
      (is (testdoc #'sut/err))
-     (is (testdoc #'sut/let))
-     (is (testdoc #'sut/if-let))
-     (is (testdoc #'sut/when-let))))
+     (is (testdoc #'sut/let))))
 
 (deftest err-test
   (are [x y] (= x y)
@@ -53,16 +51,3 @@
   (testing "clojure.core/let"
     (let [foo (sut/err 1)]
       (is (= foo (sut/->MerrError 1))))))
-
-(deftest if-let-test
-  (are [x y] (= x y)
-    2               (sut/if-let err [foo 1 bar (inc foo)] bar)
-    2               (sut/if-let err [foo 1 bar (inc foo)] bar err)
-    (sut/err "ERR") (sut/if-let err [foo (sut/err "ERR") bar (inc foo)] bar)
-    (sut/err "ERR") (sut/if-let err [foo (sut/err "ERR") bar (inc foo)] bar err)
-    nil             (sut/if-let err [foo (sut/err "ERR") bar (inc foo)] bar nil)))
-
-(deftest when-let-test
-  (are [x y] (= x y)
-    2               (sut/when-let [foo 1 bar (inc foo)] bar)
-    (sut/err "ERR") (sut/when-let [foo (sut/err "ERR") bar (inc foo)] bar)))

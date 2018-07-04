@@ -1,7 +1,5 @@
 (ns merr.core
-  (:refer-clojure :rename {let core-let
-                           if-let core-if-let
-                           when-let core-when-let}))
+  (:refer-clojure :rename {let core-let}))
 
 (defrecord MerrError [value]
   #?@(:clj [clojure.lang.IDeref (deref [_] value)]
@@ -24,7 +22,6 @@
   => (err? (err \"foo\"))
   true"
   [x] (instance? MerrError x))
-
 
 (defn err
   "Returns value as Error.
@@ -68,52 +65,3 @@
                                                   [nil ~err-sym])])
                                 (rest bindings))]
     `(core-let [~@first-bind ~@rest-binds] ~@body)))
-
-(defmacro if-let
-  "bindings => binding-form init-expr
-   If there is no Error, evaluates `then` with binding-form,
-   if not, yields `else`.
-
-  => (if-let error [a 1
-  =>                b (inc a)]
-  =>   b (err? error))
-  2
-
-  => (if-let error [a (err \"ERR\")
-  =>                b (inc a)]
-  =>   b :ng)
-  :ng
-
-  => (if-let error [a (err \"ERR\")
-  =>                b (inc a)]
-  =>   b)
-  err?"
-  {:style/indent 2}
-  ([err-sym bindings then]
-   `(if-let ~err-sym ~bindings ~then ~err-sym))
-  ([err-sym bindings then else & oldform]
-   (assert (vector? bindings) "a vector for its binding")
-   (assert (nil? oldform) "1 or 2 forms after binding vector")
-   (assert (even? (count bindings)) "an even number of forms in binding vector")
-   `(let ~err-sym ~bindings
-      (if ~err-sym ~else ~then))))
-
-(defmacro when-let
-  "bindings => binding-form init-expr
-   If there is not Error, evaluates body with binding-form,
-   if not, returns Error.
-
-  => (when-let [a 1
-  =>            b (inc a)]
-  =>   b)
-  2
-
-  => (when-let [a (err \"ERR\")
-  =>            b (inc a)]
-  =>   b)
-  err?"
-  {:style/indent 1}
-  [bindings & body]
-  (core-let [err-sym (gensym)]
-    `(let ~err-sym ~bindings
-       (or ~err-sym (do ~@body)))))
