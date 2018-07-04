@@ -26,4 +26,12 @@
              :compiler {:output-to "target/main.js"
                         :output-dir "target"
                         :main merr.test-runner
-                        :optimizations :simple}}}}}})
+                        :optimizations :simple}}}}}}
+
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]])
