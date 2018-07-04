@@ -1,9 +1,9 @@
 (ns merr.core
   (:refer-clojure :rename {let core-let}))
 
-(defrecord MerrError [value]
-  #?@(:clj [clojure.lang.IDeref (deref [_] value)]
-      :cljs [cljs.core/IDeref (-deref [_] value)]))
+(defrecord MerrError [__value__]
+  #?@(:clj [clojure.lang.IDeref (deref [_] __value__)]
+      :cljs [cljs.core/IDeref (-deref [_] __value__)]))
 
 #?(:clj
    (defmethod print-method MerrError
@@ -43,14 +43,14 @@
    If init-expr is not Error, binding-form bound to the value,
    if not, err-sym bound to the Error value and rest bindings are skipped.
 
-  => (let error [a 1
+  => (let +err+ [a 1
   =>             b (inc a)]
-  =>   [b error])
+  =>   [b +err+])
   [2 nil]
 
-  => (let error [a (err \"ERR\")
+  => (let +err+ [a (err \"ERR\")
   =>             b (inc a)]
-  =>   [b (err? error)])
+  =>   [b (err? +err+)])
   [nil true]"
   {:style/indent 2}
   [err-sym bindings & body]

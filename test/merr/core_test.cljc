@@ -23,6 +23,8 @@
   (are [x y] (= x (sut/err? y))
     true  (sut/err)
     true  (sut/err 1)
+    true  (assoc (sut/err 1) :foo "bar")
+    true  (sut/err {:cause (sut/err 1)})
     false (merge {} (sut/err))
     false true
     false false
@@ -36,16 +38,21 @@
 (deftest let-test
   (testing "succeeded"
     (sut/let +err+ [foo 1
-                    bar (inc foo)]
+                    bar (inc foo)
+                    baz (inc bar)]
       (is (= foo 1))
       (is (= bar 2))
+      (is (= baz 3))
       (is (nil? +err+))))
 
   (testing "failed"
-    (sut/let +err+ [foo (sut/err "ERR")
-                    bar (inc foo)]
-      (is (nil? foo))
+    (sut/let +err+ [foo 1
+                    bar (sut/err "ERR")
+                    baz (inc bar)]
+      (is (= foo 1))
       (is (nil? bar))
+      (is (nil? bar))
+      (is (sut/err? +err+))
       (is (= @+err+ "ERR"))))
 
   (testing "clojure.core/let"
