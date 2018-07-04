@@ -3,6 +3,7 @@
   :url "https://github.com/liquidz/merr"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :deploy-repositories [["releases" :clojars]]
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]]
   :plugins [[lein-cljsbuild "1.1.7"]
@@ -14,6 +15,7 @@
   :aliases
   {"test-cljs" ["with-profile" "test" "doo" "rhino" "test" "once"]
    "test-all"  ["do" ["test"] ["test-cljs"]]}
+
   :profiles
   {:dev {:dependencies [[testdoc "0.1.0-SNAPSHOT"]]}
    :test {:dependencies [[org.mozilla/rhino "1.7.10"]]
