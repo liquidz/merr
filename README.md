@@ -10,6 +10,12 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 * Easy to imagine behavior
 * Minimum to remember
 
+```clj
+(merr/let +err+ [foo {:some "data"}
+                 bar (may-fail bar)]
+  (if +err+ "NG" "OK"))
+```
+
 ## Usage
 [![Clojars Project](https://img.shields.io/clojars/v/merr.svg)](https://clojars.org/merr)
 
@@ -30,13 +36,13 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 (defn may-fail-inc [n]
   (if (odd? (rand-int 10))
     (inc n)
-    (merr/err (str "failed to inc: " n))))
+    (merr/err {:message (str "failed to inc: " n)})))
 
 (merr/let err [a 10
                b (may-fail-inc a)
                c (may-fail-inc b)]
   (if err
-    @err
+    (:message err)
     (str "c = " c)))
 ```
 

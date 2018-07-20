@@ -11,29 +11,31 @@
      (is (testdoc #'sut/err))
      (is (testdoc #'sut/let))))
 
+(def ^:private _det sut/default-error-type)
+
 (deftest err-test
   (are [x y] (= x y)
-    (sut/->MerrError true)          (sut/err)
-    (sut/->MerrError true)          (sut/err true)
-    (sut/->MerrError nil)           (sut/err nil)
-    (sut/->MerrError true)          (sut/err (sut/err true))
-    (sut/->MerrError {:value true}) (sut/err {:value true})))
+    (sut/->MerrError _det nil nil nil) (sut/err)
+    (sut/->MerrError :foo nil nil nil) (sut/err {:type :foo})
+    (sut/->MerrError _det "hello" nil nil) (sut/err {:message "hello"})
+    (sut/->MerrError _det nil {:foo "bar"} nil) (sut/err {:data {:foo "bar"}})
+    (sut/->MerrError _det nil nil (sut/err)) (sut/err {:cause (sut/err)}))
+
+  (let [e (sut/err {:extra "hello"})]
+    (is (instance? merr.core.MerrError e))
+    (is (= (:type e) _det))
+    (is (= (:extra e) "hello"))))
 
 (deftest err?-test
   (are [x y] (= x (sut/err? y))
     true  (sut/err)
-    true  (sut/err 1)
-    true  (assoc (sut/err 1) :foo "bar")
-    true  (sut/err {:cause (sut/err 1)})
+    true  (sut/err {:message "foo"})
+    true  (assoc (sut/err {:message "foo"}) :foo "bar")
+    true  (sut/err {:cause (sut/err)})
     false (merge {} (sut/err))
     false true
     false false
     false nil))
-
-(deftest deref-test
-  (are [x y] (= x y)
-    true  @(sut/err)
-    "ERR" @(sut/err "ERR")))
 
 (deftest let-test
   (testing "succeeded"
@@ -47,14 +49,19 @@
 
   (testing "failed"
     (sut/let +err+ [foo 1
-                    bar (sut/err "ERR")
+                    bar (sut/err {:message "ERR"})
                     baz (inc bar)]
       (is (= foo 1))
       (is (nil? bar))
       (is (nil? bar))
       (is (sut/err? +err+))
-      (is (= @+err+ "ERR"))))
+      (is (= (:message +err+) "ERR"))))
+
+  (testing "ignore error"
+    (sut/let +err+ [foo ^:merr/ignore (sut/err)]
+      (is (= foo (sut/err)))
+      (is (nil? +err+))))
 
   (testing "clojure.core/let"
-    (let [foo (sut/err 1)]
-      (is (= foo (sut/->MerrError 1))))))
+    (let [foo (sut/err)]
+      (is (sut/err? foo)))))
