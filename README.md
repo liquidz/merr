@@ -1,4 +1,4 @@
-# :fire: merr
+# merr
 [![CircleCI](https://circleci.com/gh/liquidz/merr.svg?style=svg)](https://circleci.com/gh/liquidz/merr)
 
 Minimal and good enough error handling library for Clojure/ClojureScript
@@ -18,8 +18,7 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 
 ## Usage
 [![Clojars Project](https://img.shields.io/clojars/v/merr.svg)](https://clojars.org/merr)
-
-[API Documents](https://cljdoc.xyz/d/merr/merr/0.1.0-SNAPSHOT/api/merr.core)
+[![cljdoc badge](https://cljdoc.xyz/badge/merr/merr)](https://cljdoc.xyz/d/merr/merr/CURRENT)
 
 
 ```clj
@@ -28,6 +27,12 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 
 ;; for ClojureScript
 (require '[merr.core :as merr :include-macros true])
+```
+
+### error record
+
+```clj
+(defrecord MerrError [type message data cause])
 ```
 
 ### example

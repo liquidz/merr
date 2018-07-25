@@ -5,19 +5,23 @@
 (defrecord MerrError [type message data cause])
 
 (defn err?
-  "Returns true if x is Error.
+  "Returns `true` if x is `MerrError`.
 
+  ```
   => (err? \"foo\")
   false
 
   => (err? (err {:message \"foo\"}))
-  true"
+  true
+  ```"
   [x] (instance? MerrError x))
 
 (defn err
-  "Returns value as Error.
-  NOTE default error type is `:error`
+  "Returns value as `MerrError`.
 
+  **NOTE** Default error type is `:error`
+
+  ```
   => (:type (err {:message \"hello\"}))
   :error
 
@@ -25,7 +29,8 @@
   :custom-error
 
   => (:data (err {:data {:foo \"bar\"}}))
-  {:foo \"bar\"} "
+  {:foo \"bar\"}
+  ```"
   ([] (err {}))
   ([{:keys [type message data cause]
      :or {type default-error-type} :as m}]
@@ -45,9 +50,11 @@
 
 (defmacro let
   "binding => binding-form init-expr
-   If init-expr is not Error, binding-form bound to the value,
-   if not, err-sym bound to the Error value and rest bindings are skipped.
 
+   If init-expr is not `MerrError`, binding-form bound to the value,
+   if not, `err-sym` bound to the `MerrError` value and rest bindings are skipped.
+
+  ```
   => (let +err+ [a 1
   =>             b (inc a)]
   =>   [a b (err? +err+)])
@@ -56,7 +63,8 @@
   => (let +err+ [a (err {:message \"ERR\"})
   =>             b (inc a)]
   =>   [a b (err? +err+)])
-  [nil nil true]"
+  [nil nil true]
+  ```"
   {:style/indent 2}
   [err-sym bindings & body]
   (assert (vector? bindings) "a vector for its binding")
