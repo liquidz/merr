@@ -1,33 +1,32 @@
 (ns merr.core-test
-  (:require #?@(:clj  [[clojure.test :refer :all]
+  (:require #?@(:clj  [[clojure.test :as t]
                        [merr.core :as sut]
                        testdoc.core]
-                :cljs [[cljs.test :refer-macros [deftest is are testing]]
+                :cljs [[cljs.test :as t :include-macros true]
                        [merr.core :as sut :include-macros true]])))
 
 #?(:clj
-   (deftest docstring-test
-     (is (testdoc #'sut/err?))
-     (is (testdoc #'sut/err))
-     (is (testdoc #'sut/let))))
+   (t/deftest docstring-test
+     (t/is (testdoc #'sut/err?))
+     (t/is (testdoc #'sut/err))
+     (t/is (testdoc #'sut/let))))
 
 (def ^:private _det sut/default-error-type)
 
-(deftest err-test
-  (are [x y] (= x y)
-    (sut/->MerrError _det nil nil nil) (sut/err)
+(t/deftest err-test
+  (t/are [x y] (= x y)
+    (sut/->MerrError _det nil nil nil ) (sut/err)
     (sut/->MerrError :foo nil nil nil) (sut/err {:type :foo})
-    (sut/->MerrError _det "hello" nil nil) (sut/err {:message "hello"})
-    (sut/->MerrError _det nil {:foo "bar"} nil) (sut/err {:data {:foo "bar"}})
+    (sut/->MerrError _det "hello" nil nil) (sut/err {:message "hello"}) (sut/->MerrError _det nil {:foo "bar"} nil) (sut/err {:data {:foo "bar"}})
     (sut/->MerrError _det nil nil (sut/err)) (sut/err {:cause (sut/err)}))
 
   (let [e (sut/err {:extra "hello"})]
-    (is (instance? merr.core.MerrError e))
-    (is (= (:type e) _det))
-    (is (= (:extra e) "hello"))))
+    (t/is (sut/err? e))
+    (t/is (= (:type e) _det))
+    (t/is (= (:extra e) "hello"))))
 
-(deftest err?-test
-  (are [x y] (= x (sut/err? y))
+(t/deftest err?-test
+  (t/are [x y] (= x (sut/err? y))
     true  (sut/err)
     true  (sut/err {:message "foo"})
     true  (assoc (sut/err {:message "foo"}) :foo "bar")
@@ -37,31 +36,31 @@
     false false
     false nil))
 
-(deftest let-test
-  (testing "succeeded"
+(t/deftest let-test
+  (t/testing "succeeded"
     (sut/let +err+ [foo 1
                     bar (inc foo)
-                    baz (inc bar)]
-      (is (= foo 1))
-      (is (= bar 2))
-      (is (= baz 3))
-      (is (nil? +err+))))
+                    baz (inc bar )]
+      (t/is (= foo 1))
+      (t/is (= bar 2))
+      (t/is (= baz 3))
+      (t/is (nil? +err+))))
 
-  (testing "failed"
+  (t/testing "failed"
     (sut/let +err+ [foo 1
                     bar (sut/err {:message "ERR"})
                     baz (inc bar)]
-      (is (= foo 1))
-      (is (nil? bar))
-      (is (nil? bar))
-      (is (sut/err? +err+))
-      (is (= (:message +err+) "ERR"))))
+      (t/is (= foo 1))
+      (t/is (nil? bar))
+      (t/is (nil? bar))
+      (t/is (sut/err? +err+))
+      (t/is (= (:message +err+) "ERR"))))
 
-  (testing "ignore error"
+  (t/testing "ignore error"
     (sut/let +err+ [foo ^:merr/ignore (sut/err)]
-      (is (= foo (sut/err)))
-      (is (nil? +err+))))
+      (t/is (= foo (sut/err)))
+      (t/is (nil? +err+))))
 
-  (testing "clojure.core/let"
+  (t/testing "clojure.core/let"
     (let [foo (sut/err)]
-      (is (sut/err? foo)))))
+      (t/is (sut/err? foo)))))

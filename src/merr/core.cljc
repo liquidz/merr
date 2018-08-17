@@ -14,7 +14,8 @@
   => (err? (err {:message \"foo\"}))
   true
   ```"
-  [x] (instance? MerrError x))
+  [x]
+  (instance? MerrError x))
 
 (defn err
   "Returns value as `MerrError`.
