@@ -9,7 +9,12 @@
    (t/deftest docstring-test
      (t/is (testdoc #'sut/err?))
      (t/is (testdoc #'sut/err))
-     (t/is (testdoc #'sut/let))))
+     (t/is (testdoc #'sut/let))
+     (t/is (testdoc #'sut/type))
+     (t/is (testdoc #'sut/message))
+     (t/is (testdoc #'sut/data))
+     (t/is (testdoc #'sut/cause))
+     (t/is (testdoc #'sut/assert))))
 
 (def ^:private _det sut/default-error-type)
 
@@ -64,3 +69,14 @@
   (t/testing "clojure.core/let"
     (let [foo (sut/err)]
       (t/is (sut/err? foo)))))
+
+(t/deftest assert-test
+  (let [a (atom nil)
+        ret (sut/assert true {:message (do (reset! a "foo") "foo")})]
+    (t/is (nil? ret))
+    (t/is (nil? @a)))
+
+  (let [a (atom nil)
+        ret (sut/assert false {:message (do (reset! a "foo") "foo")})]
+    (t/is (= ret (sut/err {:message "foo"})))
+    (t/is (not (nil? @a)))))
