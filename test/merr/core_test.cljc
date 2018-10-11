@@ -20,7 +20,7 @@
 
 (t/deftest err-test
   (t/are [x y] (= x y)
-    (sut/->MerrError _det nil nil nil ) (sut/err)
+    (sut/->MerrError _det nil nil nil) (sut/err)
     (sut/->MerrError :foo nil nil nil) (sut/err {:type :foo})
     (sut/->MerrError _det "hello" nil nil) (sut/err {:message "hello"}) (sut/->MerrError _det nil {:foo "bar"} nil) (sut/err {:data {:foo "bar"}})
     (sut/->MerrError _det nil nil (sut/err)) (sut/err {:cause (sut/err)}))
@@ -45,7 +45,7 @@
   (t/testing "succeeded"
     (sut/let +err+ [foo 1
                     bar (inc foo)
-                    baz (inc bar )]
+                    baz (inc bar)]
       (t/is (= foo 1))
       (t/is (= bar 2))
       (t/is (= baz 3))
