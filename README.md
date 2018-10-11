@@ -12,7 +12,8 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 
 ```clj
 (merr/let +err+ [foo {:some "data"}
-                 bar (may-fail bar)]
+                 bar (may-fail!!! foo)
+                 baz (do-something bar)]
   (if +err+ "NG" "OK"))
 ```
 
@@ -47,7 +48,7 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
                b (may-fail-inc a)
                c (may-fail-inc b)]
   (if err
-    (:message err)
+    (merr/message err)
     (str "c = " c)))
 ```
 
