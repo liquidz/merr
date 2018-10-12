@@ -26,7 +26,8 @@
              :compiler {:output-to "target/main.js"
                         :output-dir "target"
                         :main merr.test-runner
-                        :optimizations :simple}}}}}}
+                        :optimizations :simple}}}}}
+   :1.10 {:dependencies [[org.clojure/clojure "1.10.0-RC1"]]}}
 
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
