@@ -1,5 +1,8 @@
 # merr
-[![CircleCI](https://circleci.com/gh/liquidz/merr.svg?style=svg)](https://circleci.com/gh/liquidz/merr)
+[![CircleCI](https://img.shields.io/circleci/project/github/liquidz/merr/master.svg)](https://circleci.com/gh/liquidz/merr)
+[![Dependencies Status](https://versions.deps.co/liquidz/merr/status.svg)](https://versions.deps.co/liquidz/merr)
+[![Clojars Project](https://img.shields.io/clojars/v/merr.svg)](https://clojars.org/merr)
+[![cljdoc badge](https://cljdoc.xyz/badge/merr/merr)](https://cljdoc.xyz/d/merr/merr/CURRENT)
 
 Minimal and good enough error handling library for Clojure/ClojureScript
 
@@ -18,9 +21,6 @@ This library is based on ["Good Enough" error handling in Clojure](https://adamb
 ```
 
 ## Usage
-[![Clojars Project](https://img.shields.io/clojars/v/merr.svg)](https://clojars.org/merr)
-[![cljdoc badge](https://cljdoc.xyz/badge/merr/merr)](https://cljdoc.xyz/d/merr/merr/CURRENT)
-
 
 ```clj
 ;; for Clojure
