@@ -17,7 +17,9 @@
    "test-all"  ["do" ["test"] ["test-cljs"]]}
 
   :profiles
-  {:dev {:dependencies [[testdoc "0.1.0-SNAPSHOT"]]}
+  {:dev {:dependencies [[testdoc "0.1.0-SNAPSHOT"]
+                        [orchestra "2018.09.10-1"]]
+         :source-paths ["dev" "src"]}
    :test {:dependencies [[org.mozilla/rhino "1.7.10"]]
           :cljsbuild
           {:builds
