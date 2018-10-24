@@ -6,11 +6,11 @@
 
  :aliases
  {:dev
-  {:extra-paths ["test"]
+  {:extra-paths ["dev" "test"]
    :extra-deps {testdoc {:mvn/version "0.1.0-SNAPSHOT"}}}
 
   :test-clj
-  {:extra-paths ["test"]
+  {:extra-paths ["dev" "test"]
    :extra-deps  {eftest {:mvn/version "0.5.2"}}}
 
   :test-cljs
