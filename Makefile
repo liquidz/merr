@@ -1,9 +1,13 @@
 .PHONY: test lein-test cli-test lein-test-clj lein-test-cljs cli-test-clj cli-test-cljs clean ancient
 
+VERSION := 1.10.1
 POM_FILE=pom.xml
 
 $(POM_FILE):
 	clj -Spom
+
+repl:
+	iced repl --with-kaocha with-profile $(VERSION)
 
 test: lein-test cli-test
 
@@ -16,12 +20,13 @@ lein-test-cljs:
 
 cli-test: cli-test-clj cli-test-cljs
 cli-test-clj:
-	clj -R:dev -A:test-clj -e "(require '[eftest.runner :refer :all]) (run-tests (find-tests \"test\"))"
+	clj -R:dev -A:test-clj
 
 cli-test-cljs:
 	clj -A:test-cljs
 
 clean:
+	lein clean
 	\rm -f $(POM_FILE)
 
 ancient:
