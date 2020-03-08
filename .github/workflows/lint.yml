@@ -3,12 +3,16 @@ on: [push]
 jobs:
   clj-kondo:
     runs-on: ubuntu-latest
-    container:
-      image: borkdude/clj-kondo
+    # container:
+    #   image: borkdude/clj-kondo
+    # steps:
+    #   - uses: actions/checkout@v2
+    #   - name: lint by clj-kondo
+    #     run: clj-kondo --lint src:test
     steps:
       - uses: actions/checkout@v2
-      - name: lint by clj-kondo
-        run: clj-kondo --lint src:test
+      - name: Lint by clj-kondo
+        run: docker run --rm -v $(pwd):/tmp/work -w /tmp/work borkdude/clj-kondo clj-kondo --lint src:test
 
   cljstyle:
     runs-on: ubuntu-latest
