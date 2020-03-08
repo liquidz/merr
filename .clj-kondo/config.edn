@@ -1,0 +1,13 @@
+{
+ :linters {:unresolved-symbol
+           {:exclude [(clojure.test/is [testdoc])
+                      (merr.core/let)
+                      ]
+            }
+
+           :unused-binding
+           {:exclude-destructured-keys-in-fn-args true
+            }
+           }
+ }
+

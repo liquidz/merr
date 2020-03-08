@@ -4,33 +4,22 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :deploy-repositories [["releases" :clojars]]
-  :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.10.520"]]
-  :plugins [[lein-cljsbuild "1.1.7"]
-            [lein-doo "0.1.10"]]
 
-  :doo
-  {:paths {:rhino "lein run -m org.mozilla.javascript.tools.shell.Main"}}
+  :plugins [[lein-cloverage "1.1.1"]]
 
   :profiles
-  {:dev {:dependencies [[testdoc "0.1.0"]
-                        [orchestra "2019.02.06-1"]
-                        [org.clojure/test.check "0.10.0"]]
-         :source-paths ["dev" "src"]
-         :global-vars {*warn-on-reflection* true}}
-
-   :test [:dev {:dependencies [[org.mozilla/rhino "1.7.11"]]
-                :cljsbuild
-                {:builds
-                 {:test
-                  {:source-paths ["src" "test"]
-                   :compiler {:output-to "target/main.js"
-                              :output-dir "target"
-                              :main merr.test-runner
-                              :optimizations :simple}}}}}]
-   :1.9 [:test {:dependencies [[org.clojure/clojure "1.9.0"]]}]
-   :1.10 [:test {:dependencies [[org.clojure/clojure "1.10.0"]]}]
-   :1.10.1 [:test {:dependencies [[org.clojure/clojure "1.10.1"]]}]}
+  {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
+   :1.10 {:dependencies [[org.clojure/clojure "1.10.0"]]}
+   :1.10.1 {:dependencies [[org.clojure/clojure "1.10.1"]]}
+   :provided [:1.10.1 {:dependencies [[org.clojure/clojurescript "1.10.597"]]}]
+   :test {:dependencies [[lambdaisland/kaocha "0.0-590"]
+                         [lambdaisland/kaocha-cljs "0.0-68"]
+                         [testdoc "1.0.0"]
+                         [orchestra "2019.02.06-1"]
+                         [org.clojure/test.check "0.10.0"]]}
+   :dev [:test :1.10.1
+         {:source-paths ["dev" "src"]
+          :global-vars {*warn-on-reflection* true}}]}
 
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
@@ -41,6 +30,6 @@
                   ["vcs" "push"]]
 
   :aliases
-  {"test-clj"  ["with-profile" "1.9:1.10:1.10.1" "test"]
-   "test-cljs" ["with-profile" "test" "doo" "rhino" "test" "once"]
-   "test-all"  ["do" ["test-clj"] ["test-cljs"]]})
+  {"test-clj" ["with-profile" "test,1.9:test,1.10:test,1.10.1" "test"]
+   "test-cljs" ["with-profile" "+dev" "run" "-m" "kaocha.runner"]
+   "test-all" ["do" ["test-clj"] ["test-cljs"]]})

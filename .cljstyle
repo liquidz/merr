@@ -1,0 +1,10 @@
+{
+ :list-indent-size 1
+ :insert-padding-lines? false
+ :indents {core-let [[:block 1]]
+           s/fdef [[:block 1]]
+           }
+ :file-ignore #{".cljs_node_repl"
+                ".cljs_graaljs_repl"}
+ }
+; vim:ft=clojure

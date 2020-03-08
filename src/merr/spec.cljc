@@ -1,7 +1,8 @@
 (ns merr.spec
-  (:require [clojure.core.specs.alpha :as c.s]
-            [clojure.spec.alpha :as s]
-            [merr.core :as core]))
+  (:require
+   [clojure.core.specs.alpha :as c.s]
+   [clojure.spec.alpha :as s]
+   [merr.core :as core]))
 
 (s/def ::merr-error (partial instance? merr.core.MerrError))
 (s/def ::type any?)

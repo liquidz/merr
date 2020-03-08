@@ -1,10 +1,10 @@
 (ns merr.core
-  (:refer-clojure :exclude [type]
-                  :rename {assert core-assert
-                           let core-let}))
+  (:refer-clojure :exclude [type] :rename {assert core-assert
+                                           let core-let}))
 
 (def ^:const default-error-type :error)
-(defrecord MerrError [type message data cause])
+(defrecord MerrError
+  [type message data cause])
 
 (defn err?
   "Returns `true` if x is `MerrError`.
@@ -45,7 +45,8 @@
   #{number? string? vector? keyword? boolean? map? set?
     #(:merr/ignore (meta %))})
 
-(defn- compare-value [v]
+(defn- compare-value
+  [v]
   (if (some #(% v) ignore-checkers)
     [v nil]
     `(core-let [v# ~v]

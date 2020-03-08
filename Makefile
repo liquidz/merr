@@ -1,4 +1,5 @@
-.PHONY: test lein-test cli-test lein-test-clj lein-test-cljs cli-test-clj cli-test-cljs clean ancient
+.PHONY: repl prepare clean ancient coverage
+.PHONY: test test-clj test-cljs
 
 VERSION := 1.10.1
 POM_FILE=pom.xml
@@ -9,25 +10,26 @@ $(POM_FILE):
 repl:
 	iced repl --with-kaocha with-profile $(VERSION)
 
-test: lein-test cli-test
+node_modules/ws:
+	npm install
+prepare: node_modules/ws
 
-lein-test: lein-test-clj lein-test-cljs
-lein-test-clj:
-	lein test
+test: test-clj test-cljs
 
-lein-test-cljs:
+test-clj:
+	lein test-clj
+
+test-cljs: prepare
 	lein test-cljs
-
-cli-test: cli-test-clj cli-test-cljs
-cli-test-clj:
-	clj -R:dev -A:test-clj
-
-cli-test-cljs:
-	clj -A:test-cljs
 
 clean:
 	lein clean
-	\rm -f $(POM_FILE)
+
+lint:
+	clj-kondo --lint src:test
 
 ancient:
 	clojure -A:ancient
+
+coverage:
+	lein cloverage --codecov

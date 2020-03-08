@@ -1,9 +1,10 @@
 (ns merr.core-test
-  (:require #?@(:clj  [[clojure.test :as t]
-                       [merr.core :as sut]
-                       testdoc.core]
-                :cljs [[cljs.test :as t :include-macros true]
-                       [merr.core :as sut :include-macros true]])))
+  (:require
+   #?@(:clj  [[clojure.test :as t]
+              [merr.core :as sut]
+              testdoc.core]
+       :cljs [[cljs.test :as t :include-macros true]
+              [merr.core :as sut :include-macros true]])))
 
 #?(:clj
    (t/deftest docstring-test
