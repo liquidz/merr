@@ -1,0 +1,64 @@
+= merr
+image:https://github.com/liquidz/merr/workflows/test/badge.svg["GitHub Actions for test workflow", link="https://github.com/liquidz/merr/actions?query=workflow%3Atest"]
+image:https://github.com/liquidz/merr/workflows/lint/badge.svg["GitHub Actions for lint workflow", link="https://github.com/liquidz/merr/actions?query=workflow%3Alint"]
+image:https://versions.deps.co/liquidz/merr/status.svg["Dependencies Status", link="https://versions.deps.co/liquidz/merr"]
+image:https://img.shields.io/clojars/v/merr.svg["Clojars Project", link="https://clojars.org/merr"]
+image:https://cljdoc.xyz/badge/merr/merr["cljdoc badge", link="https://cljdoc.xyz/d/merr/merr/CURRENT"]
+
+Minimal and good enough error handling library for Clojure/ClojureScript
+
+This library is based on https://adambard.com/blog/acceptable-error-handling-in-clojure/["Good Enough" error handling in Clojure].
+
+== Concept
+
+* Easy to imagine behavior
+* Minimum to remember
+
+[source,clojure]
+----
+(merr/let +err+ [foo {:some "data"}
+                 bar (may-fail!!! foo)
+                 baz (do-something bar)]
+  (if +err+ "NG" "OK"))
+----
+
+== Usage
+
+[source,clojure]
+----
+;; for Clojure
+(require '[merr.core :as merr])
+
+;; for ClojureScript
+(require '[merr.core :as merr :include-macros true])
+----
+
+=== error record
+
+[source,clojure]
+----
+(defrecord MerrError [type message data cause])
+----
+
+=== example
+
+[source,clojure]
+----
+(defn may-fail-inc [n]
+  (if (odd? (rand-int 10))
+    (inc n)
+    (merr/err {:message (str "failed to inc: " n)})))
+
+(merr/let err [a 10
+               b (may-fail-inc a)
+               c (may-fail-inc b)]
+  (if err
+    (merr/message err)
+    (str "c = " c)))
+----
+
+== License
+
+Copyright © 2018-2020 https://twitter.com/uochan[Masashi Iizuka]
+
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
