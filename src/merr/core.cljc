@@ -150,8 +150,9 @@
   [e]
   (when (err? e) (:cause e)))
 
-(defmacro assert
-  "Evaluates `pred` and return an MerrError if it does not evaluate to logical true.
+(defmacro ^:deprecated assert
+  "This macro is DEPRECATED. Please consider to use `err-if` function.
+  Evaluates `pred` and return an MerrError if it does not evaluate to logical true.
 
    ```
    => (assert true {:message \"foo\"})
