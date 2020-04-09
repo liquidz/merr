@@ -10,6 +10,7 @@
    (t/deftest docstring-test
      (t/is (testdoc #'sut/err?))
      (t/is (testdoc #'sut/err))
+     (t/is (testdoc #'sut/err-if))
      (t/is (testdoc #'sut/let))
      (t/is (testdoc #'sut/type))
      (t/is (testdoc #'sut/message))
@@ -41,6 +42,22 @@
     false true
     false false
     false nil))
+
+(t/deftest err-if-test
+  (t/is (= 1 (sut/err-if 1 even?)))
+  (t/is (= 1 (sut/err-if 1 even? {})))
+  (t/is (= 1 (sut/err-if 1 even? {:type :foo})))
+
+  (t/are [x y] (= x y)
+    (sut/->MerrError _det nil nil nil) (sut/err-if 1 odd?)
+    (sut/->MerrError _det nil nil nil) (sut/err-if 1 odd? {})
+    (sut/->MerrError :foo nil nil nil) (sut/err-if 1 odd? {:type :foo})
+    (sut/->MerrError _det "hello" nil nil) (sut/err-if 1 odd? {:message "hello"})
+    (sut/->MerrError _det nil {:foo :bar} nil) (sut/err-if 1 odd? {:data {:foo :bar}})
+    (sut/->MerrError _det nil nil (sut/err)) (sut/err-if 1 odd? {:cause (sut/err)}))
+
+  (let [e (sut/err {:type :foo})]
+    (t/is (= e (sut/err-if e even? {:type :bar})))))
 
 (t/deftest let-test
   (t/testing "succeeded"
