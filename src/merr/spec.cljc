@@ -5,7 +5,7 @@
    [merr.core :as core]))
 
 (s/def ::merr-error (partial instance? merr.core.MerrError))
-(s/def ::type any?)
+(s/def ::type some?)
 (s/def ::message (s/or :string string? :none nil?))
 (s/def ::data any?)
 (s/def ::cause any?)

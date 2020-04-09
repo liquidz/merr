@@ -8,7 +8,7 @@ $(POM_FILE):
 	clj -Spom
 
 repl:
-	iced repl --with-kaocha with-profile $(VERSION)
+	iced repl --with-kaocha
 
 node_modules/ws:
 	npm install

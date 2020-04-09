@@ -24,7 +24,8 @@
   (t/are [x y] (= x y)
     (sut/->MerrError _det nil nil nil) (sut/err)
     (sut/->MerrError :foo nil nil nil) (sut/err {:type :foo})
-    (sut/->MerrError _det "hello" nil nil) (sut/err {:message "hello"}) (sut/->MerrError _det nil {:foo "bar"} nil) (sut/err {:data {:foo "bar"}})
+    (sut/->MerrError _det "hello" nil nil) (sut/err {:message "hello"})
+    (sut/->MerrError _det nil {:foo "bar"} nil) (sut/err {:data {:foo "bar"}})
     (sut/->MerrError _det nil nil (sut/err)) (sut/err {:cause (sut/err)}))
 
   (let [e (sut/err {:extra "hello"})]
