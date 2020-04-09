@@ -27,6 +27,7 @@ clean:
 
 lint:
 	clj-kondo --lint src:test
+	cljstyle check
 
 ancient:
 	clojure -A:ancient

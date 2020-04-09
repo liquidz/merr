@@ -18,8 +18,7 @@
      (t/is (testdoc #'sut/data))
      (t/is (testdoc #'sut/cause))
      (t/is (testdoc #'sut/->))
-     (t/is (testdoc #'sut/->>))
-     (t/is (testdoc #'sut/assert))))
+     (t/is (testdoc #'sut/->>))))
 
 #?(:clj
    (t/deftest README-test
@@ -113,14 +112,3 @@
     (t/is (= -1 (sut/->> 1 (+ 1) (- 1))))
     (t/is (= (sut/->MerrError _det nil 2 nil)
              (sut/->> 1 inc failinc throwexp)))))
-
-(t/deftest assert-test
-  (let [a (atom nil)
-        ret (sut/assert true {:message (do (reset! a "foo") "foo")})]
-    (t/is (nil? ret))
-    (t/is (nil? @a)))
-
-  (let [a (atom nil)
-        ret (sut/assert false {:message (do (reset! a "foo") "foo")})]
-    (t/is (= ret (sut/err {:message "foo"})))
-    (t/is (not (nil? @a)))))

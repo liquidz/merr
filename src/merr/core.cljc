@@ -1,8 +1,7 @@
 (ns merr.core
-  (:refer-clojure :exclude [type] :rename {assert core-assert
-                                           let core-let
-                                           -> core->
-                                           ->> core->>}))
+  (:refer-clojure :exclude [type ->>] :rename {assert core-assert
+                                               let core-let
+                                               -> core->}))
 
 (def ^:const default-error-type :error)
 
@@ -41,8 +40,8 @@
   ([{:keys [type message data cause]
      :or {type default-error-type} :as m}]
    (core-> m
-       (assoc :type type)
-       map->MerrError)))
+           (assoc :type type)
+           map->MerrError)))
 
 (defn err-if
   "Returns `MerrError` if `x` is `MerrError` or `test` result is logical true
