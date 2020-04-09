@@ -9,5 +9,10 @@
            {:exclude-destructured-keys-in-fn-args true
             }
            }
+
+ :lint-as {merr.core/-> clojure.core/->
+           merr.core/->> clojure.core/->>
+           }
+
  }
 
