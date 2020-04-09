@@ -3,6 +3,7 @@
 image:https://github.com/liquidz/merr/workflows/test/badge.svg["GitHub Actions for test workflow", link="https://github.com/liquidz/merr/actions?query=workflow%3Atest"]
 image:https://github.com/liquidz/merr/workflows/lint/badge.svg["GitHub Actions for lint workflow", link="https://github.com/liquidz/merr/actions?query=workflow%3Alint"]
 image:https://versions.deps.co/liquidz/merr/status.svg["Dependencies Status", link="https://versions.deps.co/liquidz/merr"]
+image:https://codecov.io/gh/liquidz/merr/branch/master/graph/badge.svg["codecov", link="https://codecov.io/gh/liquidz/merr"]
 image:https://img.shields.io/clojars/v/merr.svg["Clojars Project", link="https://clojars.org/merr"]
 image:https://cljdoc.xyz/badge/merr/merr["cljdoc badge", link="https://cljdoc.xyz/d/merr/merr/CURRENT"]
 
