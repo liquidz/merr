@@ -1,8 +1,11 @@
 (ns merr.core
   (:refer-clojure :exclude [type] :rename {assert core-assert
-                                           let core-let}))
+                                           let core-let
+                                           -> core->
+                                           ->> core->>}))
 
 (def ^:const default-error-type :error)
+
 (defrecord MerrError
   [type message data cause])
 
@@ -37,7 +40,7 @@
   ([] (err {}))
   ([{:keys [type message data cause]
      :or {type default-error-type} :as m}]
-   (-> m
+   (core-> m
        (assoc :type type)
        map->MerrError)))
 
@@ -163,3 +166,53 @@
   [pred {:keys [type message data cause] :or {type default-error-type} :as m}]
   `(when-not ~pred
      (err ~m)))
+
+(defmacro ->
+  "Threads the expr through the forms. Inserts x as the
+  second item in the first form, making a list of it if it is not a
+  list already. If there are more forms, inserts the first form as the
+  second item in second form, etc.
+  Return `MerrError` on the spot when there is on the way.
+
+  ```
+  => (-> 1 inc (- 1))
+  1
+  => (letfn [(failinc [_] (err))]
+  =>   (-> 1 inc failinc inc))
+  (err)
+  ```"
+  [x & forms]
+  (core-let [sym (gensym)
+             bindings (map (fn [form]
+                             (if (seq? form)
+                               (with-meta `(~(first form) ~sym ~@(next form)) (meta form))
+                               (list form sym)))
+                           forms)
+             bindings (cons x bindings)]
+    `(let err# [~@(interleave (repeat sym) bindings)]
+          (or err# ~sym))))
+
+(defmacro ->>
+  "Threads the expr through the forms. Inserts x as the
+  second item in the first form, making a list of it if it is not a
+  list already. If there are more forms, inserts the first form as the
+  second item in second form, etc.
+  Return `MerrError` on the spot when there is on the way.
+
+  ```
+  => (->> 1 inc (- 1))
+  -1
+  => (letfn [(failinc [_] (err))]
+  =>   (->> 1 inc failinc inc))
+  (err)
+  ```"
+  [x & forms]
+  (core-let [sym (gensym)
+             bindings (map (fn [form]
+                             (if (seq? form)
+                               (with-meta `(~@form ~sym) (meta form))
+                               (list form sym)))
+                           forms)
+             bindings (cons x bindings)]
+    `(let err# [~@(interleave (repeat sym) bindings)]
+          (or err# ~sym))))
