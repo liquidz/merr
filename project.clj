@@ -1,4 +1,4 @@
-(defproject merr "0.2.2-SNAPSHOT"
+(defproject merr "0.2.2"
   :description "Minimal and good enough error handling library for Clojure/ClojureScript"
   :url "https://github.com/liquidz/merr"
   :license {:name "Eclipse Public License"
