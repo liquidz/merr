@@ -19,6 +19,12 @@
   :args (s/cat :m (s/? ::error-map))
   :ret ::merr-error)
 
+(s/fdef core/err-if
+  :args (s/cat :x any?
+               :test any?
+               :m (s/? ::error-map))
+  :ret any?)
+
 (s/fdef core/let
   :args (s/cat :err-sym simple-symbol?
                :bindings ::c.s/bindings
