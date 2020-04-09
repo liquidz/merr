@@ -2,6 +2,7 @@
   (:require
    #?@(:clj  [[clojure.test :as t]
               [merr.core :as sut]
+              [clojure.java.io :as io]
               testdoc.core]
        :cljs [[cljs.test :as t :include-macros true]
               [merr.core :as sut :include-macros true]])))
@@ -19,6 +20,10 @@
      (t/is (testdoc #'sut/->))
      (t/is (testdoc #'sut/->>))
      (t/is (testdoc #'sut/assert))))
+
+#?(:clj
+   (t/deftest README-test
+     (t/is (testdoc (slurp (io/file "README.adoc"))))))
 
 (def ^:private _det sut/default-error-type)
 
