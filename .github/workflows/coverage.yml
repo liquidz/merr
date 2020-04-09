@@ -1,4 +1,4 @@
-name: converage
+name: coverage
 on: push
 jobs:
   coverage:
