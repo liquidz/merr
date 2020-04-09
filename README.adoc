@@ -82,6 +82,12 @@ nil
 
 => (merr/-> 10 ((fn [_] (merr/err))) (- 1))
 (merr/err)
+
+=> (merr/-> 10 (merr/err-if even?) (- 1))
+(merr/err)
+
+=> (merr/-> 10 (merr/err-if odd?) (- 1))
+9
 ----
 
 === `->>`
