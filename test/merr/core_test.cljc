@@ -16,6 +16,8 @@
      (t/is (testdoc #'sut/message))
      (t/is (testdoc #'sut/data))
      (t/is (testdoc #'sut/cause))
+     (t/is (testdoc #'sut/->))
+     (t/is (testdoc #'sut/->>))
      (t/is (testdoc #'sut/assert))))
 
 (def ^:private _det sut/default-error-type)
@@ -88,6 +90,24 @@
   (t/testing "clojure.core/let"
     (let [foo (sut/err)]
       (t/is (sut/err? foo)))))
+
+(t/deftest ->-test
+  (let [failinc (fn [i] (sut/err {:data i}))
+        throwexp (fn [& _] (throw (ex-info "must not be called" {})))]
+    (t/is (= 3 (sut/-> 1 inc inc)))
+    (t/is (= 1 (sut/-> 1 (+ 1) (- 1))))
+    (t/is (= (sut/->MerrError _det nil 2 nil)
+             (sut/-> 1 inc failinc throwexp)))
+    (t/is (= (sut/->MerrError _det nil nil nil)
+             (sut/-> 1 (sut/err-if odd?) inc)))))
+
+(t/deftest ->>-test
+  (let [failinc (fn [i] (sut/err {:data i}))
+        throwexp (fn [& _] (throw (ex-info "must not be called" {})))]
+    (t/is (= 3 (sut/->> 1 inc inc)))
+    (t/is (= -1 (sut/->> 1 (+ 1) (- 1))))
+    (t/is (= (sut/->MerrError _det nil 2 nil)
+             (sut/->> 1 inc failinc throwexp)))))
 
 (t/deftest assert-test
   (let [a (atom nil)
