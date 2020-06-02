@@ -1,4 +1,4 @@
-.PHONY: repl prepare clean ancient coverage
+.PHONY: repl prepare clean outdated coverage
 .PHONY: test test-clj test-cljs
 
 VERSION := 1.10.1
@@ -29,8 +29,8 @@ lint:
 	clj-kondo --lint src:test
 	cljstyle check
 
-ancient:
-	clojure -A:ancient
+outdated:
+	lein with-profile +antq run -m antq.core
 
 coverage:
 	lein cloverage --codecov

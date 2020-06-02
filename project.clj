@@ -19,7 +19,9 @@
                          [org.clojure/test.check "0.10.0"]]}
    :dev [:test :1.10.1
          {:source-paths ["dev" "src"]
-          :global-vars {*warn-on-reflection* true}}]}
+          :global-vars {*warn-on-reflection* true}}]
+
+   :antq {:dependencies [[antq "RELEASE"]]}}
 
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
