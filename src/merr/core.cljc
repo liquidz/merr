@@ -1,7 +1,9 @@
 (ns merr.core
-  (:refer-clojure :exclude [type ->>] :rename {assert core-assert
-                                               let core-let
-                                               -> core->}))
+  (:refer-clojure :exclude [->
+                            ->>
+                            assert
+                            let
+                            type]))
 
 (def ^:const default-error-type :error)
 
@@ -39,9 +41,9 @@
   ([] (err {}))
   ([{:keys [type message data cause]
      :or {type default-error-type} :as m}]
-   (core-> m
-           (assoc :type type)
-           map->MerrError)))
+   (clojure.core/-> m
+                    (assoc :type type)
+                    map->MerrError)))
 
 (defn err-if
   "Returns `MerrError` if `x` is `MerrError` or `test` result is logical true
@@ -77,7 +79,7 @@
   [v]
   (if (some #(% v) ignore-checkers)
     [v nil]
-    `(core-let [v# ~v]
+    `(clojure.core/let [v# ~v]
        (if (err? v#) [nil v#] [v# nil]))))
 
 (defmacro let
@@ -99,17 +101,17 @@
   ```"
   {:style/indent 2}
   [err-sym bindings & body]
-  (core-assert (vector? bindings) "a vector for its binding")
-  (core-assert (even? (count bindings)) "an even number of forms in binding vector")
-  (core-let [bindings (partition 2 bindings)
-             [k v] (first bindings)
-             first-bind [[k err-sym] (compare-value v)]
-             rest-binds (mapcat (fn [[k v]]
-                                  [[k err-sym] `(if (nil? ~err-sym)
-                                                  ~(compare-value v)
-                                                  [nil ~err-sym])])
-                                (rest bindings))]
-    `(core-let [~@first-bind ~@rest-binds]
+  (clojure.core/assert (vector? bindings) "a vector for its binding")
+  (clojure.core/assert (even? (count bindings)) "an even number of forms in binding vector")
+  (clojure.core/let [bindings (partition 2 bindings)
+                     [k v] (first bindings)
+                     first-bind [[k err-sym] (compare-value v)]
+                     rest-binds (mapcat (fn [[k v]]
+                                          [[k err-sym] `(if (nil? ~err-sym)
+                                                          ~(compare-value v)
+                                                          [nil ~err-sym])])
+                                        (rest bindings))]
+    `(clojure.core/let [~@first-bind ~@rest-binds]
        ~@body)))
 
 (defn type
@@ -181,13 +183,13 @@
   (err)
   ```"
   [x & forms]
-  (core-let [sym (gensym)
-             bindings (map (fn [form]
-                             (if (seq? form)
-                               (with-meta `(~(first form) ~sym ~@(next form)) (meta form))
-                               (list form sym)))
-                           forms)
-             bindings (cons x bindings)]
+  (clojure.core/let [sym (gensym)
+                     bindings (map (fn [form]
+                                     (if (seq? form)
+                                       (with-meta `(~(first form) ~sym ~@(next form)) (meta form))
+                                       (list form sym)))
+                                   forms)
+                     bindings (cons x bindings)]
     `(let err# [~@(interleave (repeat sym) bindings)]
           (or err# ~sym))))
 
@@ -206,12 +208,12 @@
   (err)
   ```"
   [x & forms]
-  (core-let [sym (gensym)
-             bindings (map (fn [form]
-                             (if (seq? form)
-                               (with-meta `(~@form ~sym) (meta form))
-                               (list form sym)))
-                           forms)
-             bindings (cons x bindings)]
+  (clojure.core/let [sym (gensym)
+                     bindings (map (fn [form]
+                                     (if (seq? form)
+                                       (with-meta `(~@form ~sym) (meta form))
+                                       (list form sym)))
+                                   forms)
+                     bindings (cons x bindings)]
     `(let err# [~@(interleave (repeat sym) bindings)]
           (or err# ~sym))))
