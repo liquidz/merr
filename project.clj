@@ -14,7 +14,7 @@
    :provided [:1.10.1 {:dependencies [[org.clojure/clojurescript "1.10.773"]]}]
    :test {:dependencies [[lambdaisland/kaocha "1.0.632"]
                          [lambdaisland/kaocha-cljs "0.0-71"]
-                         [testdoc "1.3.0"]
+                         [testdoc "1.4.0"]
                          [orchestra "2019.02.06-1"]
                          [org.clojure/test.check "1.0.0"]]}
    :dev [:test :1.10.1
