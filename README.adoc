@@ -19,17 +19,17 @@ This library is based on https://adambard.com/blog/acceptable-error-handling-in-
 
 [source,clojure]
 ----
-=> (require '[merr.core :as merr])
-nil
+(require '[merr.core :as merr])
+;; => nil
 
 ;; for ClojureScript
 ;; (require '[merr.core :as merr :include-macros true])
 
-=> (merr/let +err+ [foo 1
-=>                  bar (merr/err)
-=>                  baz (* bar 2)]
-=>   {:+err+ +err+ :foo foo :bar bar :baz baz})
-{:+err+ (merr/err), :foo 1, :bar nil, :baz nil}
+(merr/let +err+ [foo 1
+                 bar (merr/err)
+                 baz (* bar 2)]
+  {:+err+ +err+ :foo foo :bar bar :baz baz})
+;; => {:+err+ (merr/err), :foo 1, :bar nil, :baz nil}
 ----
 
 == Usage
@@ -45,60 +45,56 @@ nil
 
 [source,clojure]
 ----
-=> (merr/let err [a 10
-=>                b (inc a)
-=>                c (inc b)]
-=>   (if err
-=>     (merr/message err)
-=>     (str "c = " c)))
-"c = 12"
+(merr/let err [a 10
+               b (inc a)
+               c (inc b)]
+  (if err
+    (merr/message err)
+    (str "c = " c)))
+;; => "c = 12"
 
-=> (merr/let err [a 10
-=>                b (merr/err {:message "ERROR"})
-=>                c (inc b)]
-=>   (if err
-=>     (merr/message err)
-=>     (str "c = " c)))
-"ERROR"
-----
-
-=== `err-if`
-
-[source,clojure]
-----
-=> (merr/err-if 1 even?)
-1
-
-=> (merr/err-if 1 odd? {:message "ERROR"})
-(merr/err {:message "ERROR"})
+(merr/let err [a 10
+               b (merr/err {:message "ERROR"})
+               c (inc b)]
+  (if err
+    (merr/message err)
+    (str "c = " c)))
+;; => "ERROR"
 ----
 
 === `->`
 
 [source,clojure]
 ----
-=> (merr/-> 10 (+ 1) (- 1))
-10
+(merr/-> 10 (+ 1) (- 1))
+;; => 10
 
-=> (merr/-> 10 ((fn [_] (merr/err))) (- 1))
-(merr/err)
-
-=> (merr/-> 10 (merr/err-if even?) (- 1))
-(merr/err)
-
-=> (merr/-> 10 (merr/err-if odd?) (- 1))
-9
+(merr/-> 10 ((fn [_] (merr/err))) (- 1))
+;; => (merr/err)
 ----
 
 === `->>`
 
 [source,clojure]
 ----
-=> (merr/->> 10 (+ 1) (- 1))
--10
+(merr/->> 10 (+ 1) (- 1))
+;; => -10
 
-=> (merr/->> 10 ((fn [_] (merr/err))) (- 1))
-(merr/err)
+(merr/->> 10 ((fn [_] (merr/err))) (- 1))
+;; => (merr/err)
+----
+
+== Integration
+
+=== clj-kondo hooks
+
+See link:.clj-kondo/hooks/merr.clj[.clj-kondo/hooks/merr.clj] for `merr.core/let` macro.
+
+[source,clojure]
+----
+{
+ :hooks {:analyze-call {merr.core/let hooks.merr/merr-let}}
+ }
 ----
 
 == License
