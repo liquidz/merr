@@ -1,9 +1,6 @@
 {
  :linters {:unresolved-symbol
-           {:exclude [(clojure.test/is [testdoc])
-                      (merr.core/let)
-                      ]
-            }
+           {:exclude [(clojure.test/is [testdoc])]}
 
            :unused-binding
            {:exclude-destructured-keys-in-fn-args true
@@ -14,5 +11,6 @@
            merr.core/->> clojure.core/->>
            }
 
+ :hooks {:analyze-call {merr.core/let hooks.merr/merr-let}}
  }
 
