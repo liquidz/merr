@@ -44,7 +44,7 @@
                     (assoc :type type)
                     map->MerrError)))
 
-(defn err-if
+(defn ^:deprecated err-if
   "Returns `MerrError` if `x` is `MerrError` or `test` result is logical true
 
   **NOTE** Default error type is `:error`
