@@ -1,7 +1,6 @@
 (ns merr.core
   (:refer-clojure :exclude [->
                             ->>
-                            assert
                             let
                             type]))
 
@@ -101,8 +100,8 @@
   ```"
   {:style/indent 2}
   [err-sym bindings & body]
-  (clojure.core/assert (vector? bindings) "a vector for its binding")
-  (clojure.core/assert (even? (count bindings)) "an even number of forms in binding vector")
+  (assert (vector? bindings) "a vector for its binding")
+  (assert (even? (count bindings)) "an even number of forms in binding vector")
   (clojure.core/let [bindings (partition 2 bindings)
                      [k v] (first bindings)
                      first-bind [[k err-sym] (compare-value v)]
@@ -153,20 +152,6 @@
   ```"
   [e]
   (when (err? e) (:cause e)))
-
-(defmacro ^:deprecated assert
-  "This macro is DEPRECATED. Please consider to use `err-if` function.
-  Evaluates `pred` and return an MerrError if it does not evaluate to logical true.
-
-   ```
-   => (assert true {:message \"foo\"})
-   nil
-   => (assert false {:message \"foo\"})
-   (err {:message \"foo\"})
-   ```"
-  [pred {:keys [type message data cause] :or {type default-error-type} :as m}]
-  `(when-not ~pred
-     (err ~m)))
 
 (defmacro ->
   "Threads the expr through the forms. Inserts x as the
