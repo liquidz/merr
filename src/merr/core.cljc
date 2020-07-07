@@ -44,32 +44,6 @@
                     (assoc :type type)
                     map->MerrError)))
 
-(defn ^:deprecated err-if
-  "Returns `MerrError` if `x` is `MerrError` or `test` result is logical true
-
-  **NOTE** Default error type is `:error`
-
-  ```
-  => (err-if 10 odd?)
-  10
-
-  => (:type (err-if 10 even?))
-  :error
-
-  => (:type (err-if 10 even? {:type :custom-error}))
-  :custom-error
-
-  => (:type (err-if (err {:type :already-error}) even?))
-  :already-error
-  ```"
-  ([x test] (err-if x test {}))
-  ([x test {:keys [type message data cause]
-            :or {type default-error-type} :as m}]
-   (cond
-     (err? x) x
-     (test x) (err m)
-     :else x)))
-
 (def ^:private ignore-checkers
   #{number? string? vector? keyword? boolean? map? set?
     #(:merr/ignore (meta %))})
