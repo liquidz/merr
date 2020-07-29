@@ -12,11 +12,11 @@
    :1.10 {:dependencies [[org.clojure/clojure "1.10.0"]]}
    :1.10.1 {:dependencies [[org.clojure/clojure "1.10.1"]]}
    :provided [:1.10.1 {:dependencies [[org.clojure/clojurescript "1.10.773"]]}]
-   :test {:dependencies [[lambdaisland/kaocha "1.0.632"]
+   :test {:dependencies [[lambdaisland/kaocha "1.0.641"]
                          [lambdaisland/kaocha-cljs "0.0-71"]
                          [testdoc "1.4.0"]
-                         [orchestra "2019.02.06-1"]
-                         [org.clojure/test.check "1.0.0"]]}
+                         [orchestra "2020.07.12-1"]
+                         [org.clojure/test.check "1.1.0"]]}
    :dev [:test :1.10.1
          {:source-paths ["dev" "src"]
           :global-vars {*warn-on-reflection* true}}]
