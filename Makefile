@@ -24,6 +24,7 @@ test-cljs: prepare
 
 clean:
 	lein clean
+	rm -rf node_modules
 
 lint:
 	clj-kondo --lint src:test
