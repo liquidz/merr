@@ -12,7 +12,7 @@
    :1.10 {:dependencies [[org.clojure/clojure "1.10.0"]]}
    :1.10.1 {:dependencies [[org.clojure/clojure "1.10.1"]]}
    :provided [:1.10.1 {:dependencies [[org.clojure/clojurescript "1.10.773"]]}]
-   :test {:dependencies [[lambdaisland/kaocha "1.0.641"]
+   :test {:dependencies [[lambdaisland/kaocha "1.0.663"]
                          [lambdaisland/kaocha-cljs "0.0-71"]
                          [testdoc "1.4.0"]
                          [orchestra "2020.07.12-1"]
@@ -21,7 +21,7 @@
          {:source-paths ["dev" "src"]
           :global-vars {*warn-on-reflection* true}}]
 
-   :antq {:dependencies [[antq "RELEASE"]]}}
+   :antq {:dependencies [[antq/antq "RELEASE"]]}}
 
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
