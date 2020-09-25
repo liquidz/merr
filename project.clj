@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :deploy-repositories [["releases" :clojars]]
 
-  :plugins [[lein-cloverage "1.2.0"]]
+  :plugins [[lein-cloverage "1.2.1"]]
 
   :profiles
   {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
