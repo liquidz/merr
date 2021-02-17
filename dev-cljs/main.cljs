@@ -1,3 +1,5 @@
 (ns main)
 
-(defn -main [] nil)
+(defn -main
+  []
+  nil)
