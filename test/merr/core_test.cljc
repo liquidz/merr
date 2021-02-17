@@ -7,6 +7,8 @@
        :cljs [[cljs.test :as t :include-macros true]
               [merr.core :as sut :include-macros true]])))
 
+#?(:clj (println "Clojure version:" (clojure-version)))
+
 #?(:clj
    (t/deftest docstring-test
      (t/is (testdoc #'sut/err?))

@@ -1,0 +1,28 @@
+{:paths ["src"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.2"}}
+
+ :aliases
+ {:dev
+  {:extra-paths ["dev" "test"]
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.732"}
+                lambdaisland/kaocha-cljs {:mvn/version "0.0-71"}
+                testdoc/testdoc {:mvn/version "1.4.1"}
+                orchestra/orchestra {:mvn/version  "2020.09.18-1"}
+                org.clojure/test.check {:mvn/version  "1.1.0"}}}
+
+  :1.9
+  {:override-deps {org.clojure/clojure {:mvn/version "1.9.0"}}}
+
+  :test
+  {:main-opts ["-m" "kaocha.runner"]}
+
+  :outdated
+  {:extra-deps {antq/antq {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "antq.core"]}
+
+  :coverage
+  {:extra-deps {cloverage/cloverage {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "cloverage.coverage"]}
+
+  :depstar
+  {:extra-deps {seancorfield/depstar {:mvn/version "RELEASE"}}}}}

@@ -16,3 +16,6 @@ pom.xml.asc
 .cljs_node_repl
 /node_modules
 /out
+.shadow-cljs
+.nrepl.edn
+.lsp
