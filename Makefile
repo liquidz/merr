@@ -36,7 +36,7 @@ lint:
 	cljstyle check
 
 outdated:
-	clojure -M:outdated
+	clojure -M:outdated --upgrade
 
 pom:
 	clojure -Spom
