@@ -1,6 +1,8 @@
 .PHONY: repl prepare clean outdated coverage
 .PHONY: test test-clj test-cljs
 
+CP=$(shell clojure -A:dev -Spath)
+
 pom.xml:
 	clj -Spom
 
@@ -29,7 +31,7 @@ clean:
 	rm -rf node_modules target .cpcache .clj-kondo/.cache
 
 lint:
-	clj-kondo --no-warnings --lint "$(clojure -A:dev -Spath)"
+	@clj-kondo --no-warnings --lint "$(CP)"
 	clj-kondo --lint src:test
 	cljstyle check
 

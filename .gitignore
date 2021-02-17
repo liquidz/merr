@@ -12,6 +12,7 @@ pom.xml.asc
 /.cpcache
 /cljs-test-runner-out
 .clj-kondo/.cache
+.clj-kondo/testdoc
 .cljs_graaljs_repl
 .cljs_node_repl
 /node_modules
