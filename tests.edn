@@ -1,4 +1,7 @@
 #kaocha/v1
-{:tests [{:id :unit-cljs
+{:tests [{:id :unit-clj
+          :type :kaocha.type/clojure.test}
+         {:id :unit-cljs
           :type :kaocha.type/cljs}]
- }
+ :fail-fast? true
+ :color? true}

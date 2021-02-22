@@ -1,0 +1,9 @@
+{:source-paths ["src" "dev-cljs"]
+
+ :builds
+ {:app {:target :node-script
+        :output-dir "public/js/compiled"
+        :asset-path "/js/compiled"
+        :dev {:main main/-main
+              :output-to "target/js/compiled/index.js"
+              :output-dir "target/js/compiled/dev"}}}}

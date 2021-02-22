@@ -1,4 +1,1 @@
-{
- :indents {sut/let [[:block 2]]}
- }
-; vim:ft=clojure
+{:rules {:indentation {:indents {sut/let [[:block 2]]}}}}

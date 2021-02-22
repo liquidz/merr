@@ -2,13 +2,37 @@ name: test
 on: [push]
 
 jobs:
-  test:
+  test-clj:
+    strategy:
+      matrix:
+        java: ['8', '11', '14', '15']
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - run: java -version
+      - uses: DeLaGuardo/setup-clojure@91054c3b9dc15fdc6a2f45be47405d891e672ef0
+        with:
+          tools-deps: '1.10.1.727'
       - uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: v1-m2-${{ hashFiles('project.clj') }}
-      - run: lein deps
-      - run: make test
+          key: test-m2-${{ hashFiles('deps.edn') }}-v1
+      - name: run test
+        run: make test-clj
+
+  test-cljs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: DeLaGuardo/setup-clojure@91054c3b9dc15fdc6a2f45be47405d891e672ef0
+        with:
+          tools-deps: '1.10.1.727'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: test-m2-${{ hashFiles('deps.edn') }}-v1
+      - run: make test-cljs

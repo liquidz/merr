@@ -1,16 +1,10 @@
-{
- :linters {:unresolved-symbol
-           {:exclude [(clojure.test/is [testdoc])]}
-
-           :unused-binding
-           {:exclude-destructured-keys-in-fn-args true
-            }
-           }
+{:linters {:unused-binding
+           {:exclude-destructured-keys-in-fn-args true}}
 
  :lint-as {merr.core/-> clojure.core/->
-           merr.core/->> clojure.core/->>
-           }
+           merr.core/->> clojure.core/->>}
 
  :hooks {:analyze-call {merr.core/let hooks.merr/merr-let}}
- }
 
+ :config-paths ["testdoc/testdoc"]
+ :output {:exclude-files [".cljs_node_repl"]}}
