@@ -10,13 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: ${{ matrix.java }}
       - run: java -version
-      - uses: DeLaGuardo/setup-clojure@91054c3b9dc15fdc6a2f45be47405d891e672ef0
+      - uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: '1.10.1.727'
+          tools-deps: '1.10.3.822'
       - uses: actions/cache@v2
         with:
           path: ~/.m2
@@ -28,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: DeLaGuardo/setup-clojure@91054c3b9dc15fdc6a2f45be47405d891e672ef0
+      - uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: '1.10.1.727'
+          tools-deps: '1.10.3.822'
       - uses: actions/cache@v2
         with:
           path: ~/.m2

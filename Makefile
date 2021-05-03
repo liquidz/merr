@@ -52,7 +52,7 @@ install: clean $(ARTIFACT)
 deploy: clean $(ARTIFACT)
 	echo "Testing if CLOJARS_USERNAME environmental variable exists."
 	test $(CLOJARS_USERNAME)
-	clojure -X:deploy :installer :remote :sign-releases? true :artifact $(ARTIFACT)
+	clojure -X:deploy :installer :remote :artifact $(ARTIFACT)
 
 coverage:
 	clojure -M:coverage:dev --src-ns-path=src --test-ns-path=test --codecov
