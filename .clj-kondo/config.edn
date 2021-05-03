@@ -7,4 +7,5 @@
  :hooks {:analyze-call {merr.core/let hooks.merr/merr-let}}
 
  :config-paths ["testdoc/testdoc"]
- :output {:exclude-files [".cljs_node_repl"]}}
+ :output {:exclude-files [".cljs_node_repl"
+                          "src/merr/spec.cljc"]}}
