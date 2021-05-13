@@ -17,7 +17,7 @@ jobs:
       - run: java -version
       - uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: '1.10.3.822'
+          tools-deps: latest
       - uses: actions/cache@v2
         with:
           path: ~/.m2
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: '1.10.3.822'
+          tools-deps: latest
       - uses: actions/cache@v2
         with:
           path: ~/.m2
