@@ -4,7 +4,7 @@
  :aliases
  {:dev
   {:extra-paths ["dev" "test"]
-   :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.829"}
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.861"}
                 lambdaisland/kaocha-cljs {:mvn/version "0.0-71"}
                 testdoc/testdoc {:mvn/version "1.4.1"}
                 orchestra/orchestra {:mvn/version  "2021.01.01-1"}
