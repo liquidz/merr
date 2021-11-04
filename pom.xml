@@ -4,7 +4,7 @@
   <groupId>com.github.liquidz</groupId>
   <artifactId>merr</artifactId>
   <packaging>jar</packaging>
-  <version>0.3.2</version>
+  <version>0.3.3</version>
   <name>merr</name>
   <description>Minimal and good enough error handling library for Clojure/ClojureScript</description>
   <url>https://github.com/liquidz/merr</url>
