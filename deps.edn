@@ -4,8 +4,8 @@
  :aliases
  {:dev
   {:extra-paths ["dev" "test"]
-   :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.861"}
-                lambdaisland/kaocha-cljs {:mvn/version "0.0-71"}
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.60.945"}
+                lambdaisland/kaocha-cljs {:mvn/version "1.0.107"}
                 testdoc/testdoc {:mvn/version "1.4.1"}
                 orchestra/orchestra {:mvn/version  "2021.01.01-1"}
                 org.clojure/test.check {:mvn/version  "1.1.0"}}}
@@ -32,6 +32,6 @@
   :deploy
   {:extra-deps {slipset/deps-deploy {;:mvn/version "RELEASE"
                                      :git/url "https://github.com/slipset/deps-deploy"
-                                     :sha "b4359c5d67ca002d9ed0c4b41b710d7e5a82e3bf"}}
+                                     :sha "9b8db1f57722d19cf92de57ac7db28d71a915bcf"}}
    :exec-fn deps-deploy.deps-deploy/deploy
    :exec-args {}}}}
