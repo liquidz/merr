@@ -22,6 +22,7 @@ test: test-clj test-cljs
 .PHONY: test-clj
 test-clj:
 	clojure -M:dev:1.9:test --focus :unit-clj
+	clojure -M:dev:1.10:test --focus :unit-clj
 	clojure -M:dev:test --focus :unit-clj
 
 .PHONY: test-cljs
