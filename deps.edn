@@ -24,14 +24,6 @@
   {:extra-deps {cloverage/cloverage {:mvn/version "RELEASE"}}
    :main-opts ["-m" "cloverage.coverage"]}
 
-  :depstar
-  {:extra-deps {com.github.seancorfield/depstar {:mvn/version "RELEASE"}}
-   :ns-default hf.depstar
-   :exec-args {}}
-
-  :deploy
-  {:extra-deps {slipset/deps-deploy {;:mvn/version "RELEASE"
-                                     :git/url "https://github.com/slipset/deps-deploy"
-                                     :sha "9b8db1f57722d19cf92de57ac7db28d71a915bcf"}}
-   :exec-fn deps-deploy.deps-deploy/deploy
-   :exec-args {}}}}
+  :build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.1" :git/sha "7d40500"}
+                 slipset/deps-deploy {:mvn/version "0.2.0"}}
+          :ns-default build}}}

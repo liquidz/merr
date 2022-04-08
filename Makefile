@@ -2,10 +2,6 @@
 .PHONY: test test-clj test-cljs
 
 CP=$(shell clojure -A:dev -Spath)
-ARTIFACT=target/merr.jar
-
-pom.xml:
-	clj -Spom
 
 repl:
 	iced repl -A:dev --with-kaocha --force-clojure-cli
@@ -40,19 +36,19 @@ outdated:
 	clojure -M:outdated --upgrade
 
 pom:
-	clojure -Spom
+	clojure -T:build pom
 
-$(ARTIFACT): pom
-	clojure -X:depstar jar :jar $@
-jar: clean $(ARTIFACT)
+.PHONY: jar
+jar:
+	clojure -T:build jar
 
-install: clean $(ARTIFACT)
-	clojure -X:deploy :installer :local :artifact $(ARTIFACT)
+.PHONY: install
+install: clean
+	clojure -T:build install
 
-deploy: clean $(ARTIFACT)
-	echo "Testing if CLOJARS_USERNAME environmental variable exists."
-	test $(CLOJARS_USERNAME)
-	clojure -X:deploy :installer :remote :artifact $(ARTIFACT)
+.PHONY: deploy
+deploy: clean
+	clojure -T:build deploy
 
 coverage:
 	clojure -M:coverage:dev --src-ns-path=src --test-ns-path=test --codecov
