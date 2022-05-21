@@ -107,6 +107,6 @@ And update `:config-paths` as below.
 
 == License
 
-Copyright © 2018-2021 https://twitter.com/uochan[Masashi Iizuka]
+Copyright © 2018-2022 https://twitter.com/uochan[Masashi Iizuka]
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
