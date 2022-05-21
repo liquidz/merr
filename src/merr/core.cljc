@@ -76,6 +76,8 @@
   [err-sym bindings & body]
   (assert (vector? bindings) "a vector for its binding")
   (assert (even? (count bindings)) "an even number of forms in binding vector")
+  (assert (some #(= err-sym %) (tree-seq coll? seq body))
+          (str err-sym " must be handled"))
   (clojure.core/let [bindings (partition 2 bindings)
                      [k v] (first bindings)
                      first-bind [[k err-sym] (compare-value v)]

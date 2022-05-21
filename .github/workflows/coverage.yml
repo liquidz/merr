@@ -4,11 +4,11 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: DeLaGuardo/setup-clojure@master
         with:
           tools-deps: latest
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.m2
           key: coverage-m2-${{ hashFiles('deps.edn') }}-v1

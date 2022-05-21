@@ -5,20 +5,20 @@ jobs:
   test-clj:
     strategy:
       matrix:
-        java: ['8', '11', '14', '15']
+        java: ['8', '11', '17']
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java }}
       - run: java -version
       - uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: latest
-      - uses: actions/cache@v2
+          cli: latest
+      - uses: actions/cache@v3
         with:
           path: ~/.m2
           key: test-m2-${{ hashFiles('deps.edn') }}-v1
@@ -28,11 +28,11 @@ jobs:
   test-cljs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: DeLaGuardo/setup-clojure@master
         with:
           tools-deps: latest
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.m2
           key: test-m2-${{ hashFiles('deps.edn') }}-v1
