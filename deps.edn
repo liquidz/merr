@@ -26,6 +26,6 @@
   {:extra-deps {cloverage/cloverage {:mvn/version "RELEASE"}}
    :main-opts ["-m" "cloverage.coverage"]}
 
-  :build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.1" :git/sha "7d40500"}
-                 slipset/deps-deploy {:mvn/version "0.2.0"}}
-          :ns-default build}}}
+  :build
+  {:deps {com.github.liquidz/build.edn {:git/tag "0.1.34" :git/sha "ccb8409"}}
+   :ns-default build-edn.main}}}

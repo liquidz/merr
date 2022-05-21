@@ -1,0 +1,6 @@
+{:lib com.github.liquidz/merr
+ :version "0.3.{{commit-count}}"
+ :scm {:connection "scm:git:git://github.com/liquidz/merr.git"
+       :developerConnection "scm:git:ssh://git@github.com/liquidz/merr.git"
+       :url "https://github.com/liquidz/merr"}
+ :github-actions? true}
