@@ -6,7 +6,7 @@
   {:extra-paths ["dev" "test"]
    :extra-deps {lambdaisland/kaocha {:mvn/version "1.66.1034"}
                 lambdaisland/kaocha-cljs {:mvn/version "1.0.107"}
-                testdoc/testdoc {:mvn/version "1.4.1"}
+                com.github.liquidz/testdoc {:mvn/version "1.5.98"}
                 orchestra/orchestra {:mvn/version  "2021.01.01-1"}}}
 
   :1.9
@@ -27,5 +27,5 @@
    :main-opts ["-m" "cloverage.coverage"]}
 
   :build
-  {:deps {com.github.liquidz/build.edn {:git/tag "0.1.46" :git/sha "1516034"}}
+  {:deps {com.github.liquidz/build.edn {:git/tag "0.2.63" :git/sha "f4e571d"}}
    :ns-default build-edn.main}}}
