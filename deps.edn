@@ -27,5 +27,5 @@
    :main-opts ["-m" "cloverage.coverage"]}
 
   :build
-  {:deps {com.github.liquidz/build.edn {:git/tag "0.3.90" :git/sha "e3a3e31"}}
+  {:deps {com.github.liquidz/build.edn {:git/tag "0.5.116" :git/sha "f633fa3"}}
    :ns-default build-edn.main}}}
