@@ -1,4 +1,4 @@
 {:lib com.github.liquidz/merr
  :description "Minimal and good enough error handling library for Clojure/ClojureScript"
- :version "0.3.{{git/commit-count}}"
+ :version "0.4.{{git/commit-count}}"
  :github-actions? true}
