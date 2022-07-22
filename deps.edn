@@ -5,7 +5,6 @@
  {:dev
   {:extra-paths ["dev" "test"]
    :extra-deps {lambdaisland/kaocha {:mvn/version "1.68.1059"}
-                lambdaisland/kaocha-cljs {:mvn/version "1.0.107"}
                 com.github.liquidz/testdoc {:mvn/version "1.5.98"}
                 orchestra/orchestra {:mvn/version  "2021.01.01-1"}}}
 
@@ -15,8 +14,13 @@
   :1.10
   {:override-deps {org.clojure/clojure {:mvn/version "1.10.3"}}}
 
-  :test
+  :test-clj
   {:main-opts ["-m" "kaocha.runner"]}
+
+  :test-cljs
+  {:extra-deps {olical/cljs-test-runner {:mvn/version "3.8.0"}
+                org.clojure/clojurescript {:mvn/version "1.11.60"}}
+   :main-opts ["-m" "cljs-test-runner.main"]}
 
   :outdated
   {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
