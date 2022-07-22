@@ -3,31 +3,35 @@ CP=$(shell clojure -A:dev -Spath)
 .PHONY: repl
 repl:
 	iced repl -A:dev --with-kaocha --force-clojure-cli
+
 .PHONY: repl-cljs
 repl-cljs:
-	iced repl --force-shadow-cljs app
+	@npx nbb --classpath "$(shell clojure -A:dev -Spath)" nrepl-server
 
 .PHONY: inspect
 inspect:
 	node --inspect target/js/compiled/index.js
 
-node_modules/ws:
-	npm install
-.PHONY: prepare
-prepare: node_modules/ws
-
 .PHONY: test
-test: test-clj test-cljs
+test: test-clj test-bb test-cljs test-nbb
 
 .PHONY: test-clj
 test-clj:
-	clojure -M:dev:1.9:test --focus :unit-clj
-	clojure -M:dev:1.10:test --focus :unit-clj
-	clojure -M:dev:test --focus :unit-clj
+	clojure -M:dev:1.9:test-clj
+	clojure -M:dev:1.10:test-clj
+	clojure -M:dev:test-clj
+
+.PHONY: test-bb
+test-bb:
+	@bb --classpath "$(CP)" bb_test_runner.clj
 
 .PHONY: test-cljs
-test-cljs: prepare
-	clojure -M:dev:test --focus :unit-cljs
+test-cljs:
+	@clojure -M:dev:test-cljs
+
+.PHONY: test-nbb
+test-nbb:
+	@npx nbb --classpath "$(CP)" bb_test_runner.clj
 
 .PHONY: clean
 clean:
@@ -35,7 +39,6 @@ clean:
 
 .PHONY: lint
 lint:
-	@clj-kondo --no-warnings --lint "$(CP)"
 	clj-kondo --lint src:test
 	cljstyle check
 
