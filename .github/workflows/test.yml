@@ -31,9 +31,24 @@ jobs:
       - uses: actions/checkout@v3
       - uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: latest
+          cli: latest
       - uses: actions/cache@v3
         with:
           path: ~/.m2
           key: test-m2-${{ hashFiles('deps.edn') }}-v1
       - run: make test-cljs
+
+  test-bb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: DeLaGuardo/setup-clojure@master
+        with:
+          cli: latest
+          bb: latest
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: test-m2-${{ hashFiles('deps.edn') }}-v1
+      - run: make test-bb
+      - run: make test-nbb

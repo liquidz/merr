@@ -178,3 +178,60 @@
                      bindings (cons x bindings)]
     `(let err# [~@(interleave (repeat sym) bindings)]
           (or err# ~sym))))
+
+(defn- ex->err
+  [cljs? ex & [m]]
+  `(err {:type (or (:type ~m)
+                   (:merr/type (ex-data ~ex))
+                   default-error-type)
+         :message (or (:message ~m)
+                      (if ~cljs?
+                        (.-message ~ex)
+                        (.getMessage ~ex)))
+         :data (merge (:data ~m)
+                      (ex-data ~ex))
+         :cause ~ex}))
+
+#?(:clj (defmacro try
+          "Returs `MerrError` when Exceptions/Errors are thrown.
+
+          ```
+          => (merr.core/try (throw (ex-info \"hello\" {})))
+          err?
+
+          => (type (merr.core/try {:type :test} (throw (ex-info \"hello\" {}))))
+          :test
+
+          => (type (merr.core/try (throw (ex-info \"hello\" {:merr/type :test}))))
+          :test
+
+          => (data (merr.core/try {:data {:bar 2}} (throw (ex-info \"hello\" {:foo 1}))))
+          {:foo 1, :bar 2}
+          ```"
+          [& body]
+          (clojure.core/let [[m & body] (if (and (> (count body) 1)
+                                                 (map? (first body)))
+                                          body
+                                          (cons {} body))
+                             ;; cf.
+                             ;; https://groups.google.com/g/clojurescript/c/HsWTuhMP7yc
+                             ;; https://github.com/tonsky/datascript/blob/eef79f8c21be50a63e77dbe5672a307c6980fb90/src/datascript/arrays.cljc#L22
+                             cljs? (some? (:ns &env))
+                             ex-class (if cljs? 'js/Error 'Throwable)
+                             ex-sym (gensym "ex")]
+            `(try
+               ~@body
+               (catch ~ex-class ~ex-sym
+                 ~(ex->err cljs? ex-sym m)))))
+   ;; For nbb
+   :cljs (defmacro try
+           [& body]
+           (clojure.core/let [[m & body] (if (and (> (count body) 1)
+                                                  (map? (first body)))
+                                           body
+                                           (cons {} body))
+                              ex-sym (gensym "ex")]
+             `(try
+                ~@body
+                (catch js/Error ~ex-sym
+                  ~(ex->err true ex-sym m))))))
