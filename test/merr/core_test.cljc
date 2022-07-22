@@ -7,9 +7,13 @@
        :cljs [[cljs.test :as t :include-macros true]
               [merr.core :as sut :include-macros true]])))
 
-#?(:clj (println "Clojure version:" (clojure-version)))
+#?(:bb
+   nil
+   :clj (println "Clojure version:" (clojure-version)))
 
-#?(:clj
+#?(:bb
+   nil
+   :clj
    (t/deftest docstring-test
      (t/is (testdoc #'sut/err?))
      (t/is (testdoc #'sut/err))
@@ -19,16 +23,24 @@
      (t/is (testdoc #'sut/data))
      (t/is (testdoc #'sut/cause))
      (t/is (testdoc #'sut/->))
-     (t/is (testdoc #'sut/->>))))
+     (t/is (testdoc #'sut/->>))
+     (t/is (testdoc #'sut/try))))
 
-#?(:clj
+#?(:bb
+   nil
+   :clj
    (t/deftest README-test
      (t/is (testdoc (slurp (io/file "README.adoc"))))))
 
 (def ^:private _det sut/default-error-type)
 
+(defn- err=
+  [e1 e2]
+  (every? #(= (% e1) (% e2))
+          [sut/type sut/message sut/data sut/cause]))
+
 (t/deftest err-test
-  (t/are [x y] (= x y)
+  (t/are [x y] (err= x y)
     (sut/->MerrError _det nil nil nil) (sut/err)
     (sut/->MerrError :foo nil nil nil) (sut/err {:type :foo})
     (sut/->MerrError _det "hello" nil nil) (sut/err {:message "hello"})
@@ -85,13 +97,42 @@
         throwexp (fn [& _] (throw (ex-info "must not be called" {})))]
     (t/is (= 3 (sut/-> 1 inc inc)))
     (t/is (= 1 (sut/-> 1 (+ 1) (- 1))))
-    (t/is (= (sut/->MerrError _det nil 2 nil)
-             (sut/-> 1 inc failinc throwexp)))))
+    (t/is (err= (sut/->MerrError _det nil 2 nil)
+                (sut/-> 1 inc failinc throwexp)))))
 
 (t/deftest ->>-test
   (let [failinc (fn [i] (sut/err {:data i}))
         throwexp (fn [& _] (throw (ex-info "must not be called" {})))]
     (t/is (= 3 (sut/->> 1 inc inc)))
     (t/is (= -1 (sut/->> 1 (+ 1) (- 1))))
-    (t/is (= (sut/->MerrError _det nil 2 nil)
-             (sut/->> 1 inc failinc throwexp)))))
+    (t/is (err= (sut/->MerrError _det nil 2 nil)
+                (sut/->> 1 inc failinc throwexp)))))
+
+(t/deftest try-test
+  (let [ex (ex-info "test error" {::test 1})]
+    (t/is (err= (sut/err {:message "test error"
+                          :data {::test 1}
+                          :cause ex})
+                (sut/try (throw ex))))
+
+    (t/is (err= (sut/err {:message "test error"
+                          :data {::test 1}
+                          :cause ex})
+                (sut/try {} (throw ex))))
+
+    (t/is (err= (sut/err {:type ::error
+                          :message "new message"
+                          :data {::test 1
+                                 ::new 2}
+                          :cause ex})
+                (sut/try {:type ::error
+                          :message "new message"
+                          :data {::new 2}}
+                         (throw ex)))))
+
+  (let [ex (ex-info "test typed error" {:merr/type ::error})]
+    (t/is (err= (sut/err {:type ::error
+                          :message "test typed error"
+                          :data {:merr/type ::error}
+                          :cause ex})
+                (sut/try (throw ex))))))
