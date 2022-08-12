@@ -4,7 +4,7 @@
  :aliases
  {:dev
   {:extra-paths ["dev" "test"]
-   :extra-deps {lambdaisland/kaocha {:mvn/version "1.68.1059"}
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.69.1069"}
                 com.github.liquidz/testdoc {:mvn/version "1.5.98"}
                 orchestra/orchestra {:mvn/version  "2021.01.01-1"}}}
 
@@ -31,5 +31,5 @@
    :main-opts ["-m" "cloverage.coverage"]}
 
   :build
-  {:deps {com.github.liquidz/build.edn {:git/tag "0.5.116" :git/sha "f633fa3"}}
+  {:deps {com.github.liquidz/build.edn {:git/tag "0.7.145" :git/sha "776501e"}}
    :ns-default build-edn.main}}}
