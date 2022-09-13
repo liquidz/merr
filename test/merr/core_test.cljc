@@ -136,3 +136,50 @@
                           :data {:merr/type ::error}
                           :cause ex})
                 (sut/try (throw ex))))))
+
+(t/deftest if-result-test
+  (t/testing "result branch"
+    (t/is (= 1 (sut/if-result 1 [result error]
+                              result
+                              error)))
+    (t/is (nil? (sut/if-result nil [result error]
+                               result
+                               error))))
+
+  (t/testing "error branch"
+    (t/is (err= (sut/->MerrError _det "An error" nil nil)
+                (sut/if-result (sut/err {:message "An error"}) [result error]
+                               result
+                               error)))))
+
+(t/deftest if-error-test
+  (t/testing "result branch"
+    (t/is (= 1 (sut/if-error 1 [result error]
+                             error
+                             result)))
+    (t/is (nil? (sut/if-error nil [result error]
+                              error
+                              result))))
+
+  (t/testing "error branch"
+    (t/is (err= (sut/->MerrError _det "An error" nil nil)
+                (sut/if-error (sut/err {:message "An error"}) [result error]
+                              error
+                              result)))))
+
+(t/deftest when-result-test
+  (t/testing "result"
+    (t/is (= 1 (sut/when-result 1 [result] result)))
+    (t/is (nil? (sut/when-result nil [result] result))))
+
+  (t/testing "no result"
+    (t/is (nil? (sut/when-result (sut/err {:message "An error"}) [result] result)))))
+
+(t/deftest when-error-test
+  (t/testing "no error"
+    (t/is (nil? (sut/when-error 1 [error] error)))
+    (t/is (nil? (sut/when-error nil [error] error))))
+
+  (t/testing "error"
+    (t/is (err= (sut/->MerrError _det "An error" nil nil)
+                (sut/when-error (sut/err {:message "An error"}) [error] error)))))

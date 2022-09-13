@@ -235,3 +235,30 @@
                 ~@body
                 (catch js/Error ~ex-sym
                   ~(ex->err true ex-sym m))))))
+
+(defmacro if-result [tst bindings then else]
+  (clojure.core/let [result (bindings 0)
+                     error  (bindings 1)]
+    `(clojure.core/let [temp# ~tst]
+       (if (err? temp#)
+         (clojure.core/let [~error temp#]
+           ~else)
+         (clojure.core/let [~result temp#]
+           ~then)))))
+
+(defmacro if-error [tst bindings then else]
+  `(if-result ~tst ~bindings ~else ~then))
+
+(defmacro when-result [tst bindings & body]
+  (clojure.core/let [form (bindings 0)]
+    `(clojure.core/let [temp# ~tst]
+       (when-not (err? temp#)
+         (clojure.core/let [~form temp#]
+           ~@body)))))
+
+(defmacro when-error [tst bindings & body]
+  (clojure.core/let [form (bindings 0)]
+    `(clojure.core/let [temp# ~tst]
+       (when (err? temp#)
+         (clojure.core/let [~form temp#]
+           ~@body)))))
