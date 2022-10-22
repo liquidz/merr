@@ -4,8 +4,8 @@
  :aliases
  {:dev
   {:extra-paths ["dev" "test"]
-                com.github.liquidz/testdoc {:mvn/version "1.5.98"}
    :extra-deps {lambdaisland/kaocha {:mvn/version "1.70.1086"}
+                com.github.liquidz/testdoc {:mvn/version "1.5.103"}
                 orchestra/orchestra {:mvn/version  "2021.01.01-1"}}}
 
   :1.9
