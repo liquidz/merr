@@ -93,6 +93,37 @@ This library is based on https://adambard.com/blog/acceptable-error-handling-in-
 ;; => merr/error?
 ----
 
+== Custom error
+
+You can specify any keywords as `:type`, but you may want to define and use specific `:type` of errors in your project.
+In that case, `merr.helper` is useful.
+
+[source,clojure]
+----
+(require '[merr.helper :as merr.h])
+;; => nil
+
+(def custom-error (partial merr.h/typed-error ::custom-error-type))
+;; => var?
+
+(def custom-error? (partial merr.h/typed-error? ::custom-error-type))
+;; => var?
+
+(custom-error? (custom-error {:message "custom error"}))
+;; => true
+----
+
+`typed-error?` will check child error types, so you can define sub errors via `clojure.core/derive`.
+
+[source,clojure]
+----
+(derive ::sub-custom-error-type ::custom-error-type)
+;; => nil
+
+(custom-error? (merr/error {:type ::sub-custom-error-type}))
+;; => true
+----
+
 == Integration
 
 === clj-kondo
