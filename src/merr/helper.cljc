@@ -2,11 +2,11 @@
   (:require
    [merr.core :as core]))
 
-(defn specific-typed-error
+(defn typed-error
   "Returns type specified `merr.core.MerrError`
 
   ```
-  => (def custom-error (partial specific-typed-error ::custom))
+  => (def custom-error (partial typed-error ::custom))
   var?
 
   => (:type (custom-error))
@@ -16,15 +16,15 @@
   \"hello\"
   ```"
   ([error-type]
-   (specific-typed-error error-type {}))
+   (typed-error error-type {}))
   ([error-type {:as m :keys [message data cause]}]
    (core/error (assoc m :type error-type))))
 
-(defn specific-typed-error?
+(defn typed-error?
   "Returns `true` if x is type specified `merr.core.MerrError`
 
   ```
-  => (def custom-error? (partial specific-typed-error? ::custom))
+  => (def custom-error? (partial typed-error? ::custom))
   var?
 
   => (custom-error? (merr.core/error {:type ::custom}))

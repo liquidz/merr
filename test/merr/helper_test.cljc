@@ -6,8 +6,8 @@
    [merr.core :as core]
    [merr.helper :as sut]))
 
-(def test-error (partial sut/specific-typed-error ::test-error))
-(def test-error? (partial sut/specific-typed-error? ::test-error))
+(def test-error (partial sut/typed-error ::test-error))
+(def test-error? (partial sut/typed-error? ::test-error))
 
 (t/deftest test-error-test
   (t/is (core/error? (test-error)))
@@ -25,5 +25,5 @@
    nil
    :clj
    (t/deftest docstring-test
-     (t/is (testdoc #'sut/specific-typed-error))
-     (t/is (testdoc #'sut/specific-typed-error?))))
+     (t/is (testdoc #'sut/typed-error))
+     (t/is (testdoc #'sut/typed-error?))))
