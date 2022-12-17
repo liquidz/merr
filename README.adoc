@@ -27,10 +27,10 @@ This library is based on https://adambard.com/blog/acceptable-error-handling-in-
 ;; (require '[merr.core :as merr :include-macros true])
 
 (merr/let +err+ [foo 1
-                 bar (merr/err)
+                 bar (merr/error)
                  baz (* bar 2)]
   {:+err+ +err+ :foo foo :bar bar :baz baz})
-;; => {:+err+ (merr/err), :foo 1, :bar nil, :baz nil}
+;; => {:+err+ (merr/error), :foo 1, :bar nil, :baz nil}
 ----
 
 == Usage
@@ -55,7 +55,7 @@ This library is based on https://adambard.com/blog/acceptable-error-handling-in-
 ;; => "c = 12"
 
 (merr/let err [a 10
-               b (merr/err {:message "ERROR"})
+               b (merr/error {:message "ERROR"})
                c (inc b)]
   (if err
     (merr/message err)
@@ -70,8 +70,8 @@ This library is based on https://adambard.com/blog/acceptable-error-handling-in-
 (merr/-> 10 (+ 1) (- 1))
 ;; => 10
 
-(merr/-> 10 ((fn [_] (merr/err))) (- 1))
-;; => (merr/err)
+(merr/-> 10 ((fn [_] (merr/error))) (- 1))
+;; => (merr/error)
 ----
 
 === `->>`
@@ -81,8 +81,8 @@ This library is based on https://adambard.com/blog/acceptable-error-handling-in-
 (merr/->> 10 (+ 1) (- 1))
 ;; => -10
 
-(merr/->> 10 ((fn [_] (merr/err))) (- 1))
-;; => (merr/err)
+(merr/->> 10 ((fn [_] (merr/error))) (- 1))
+;; => (merr/error)
 ----
 
 === `try`
@@ -90,7 +90,38 @@ This library is based on https://adambard.com/blog/acceptable-error-handling-in-
 [source,clojure]
 ----
 (merr/try (throw (ex-info "ERROR" {})))
-;; => merr/err?
+;; => merr/error?
+----
+
+== Custom error
+
+You can specify any keywords as `:type`, but you may want to define and use specific `:type` of errors in your project.
+In that case, `merr.helper` is useful.
+
+[source,clojure]
+----
+(require '[merr.helper :as merr.h])
+;; => nil
+
+(def custom-error (partial merr.h/typed-error ::custom-error-type))
+;; => var?
+
+(def custom-error? (partial merr.h/typed-error? ::custom-error-type))
+;; => var?
+
+(custom-error? (custom-error {:message "custom error"}))
+;; => true
+----
+
+`typed-error?` will check child error types, so you can define sub errors via `clojure.core/derive`.
+
+[source,clojure]
+----
+(derive ::sub-custom-error-type ::custom-error-type)
+;; => nil
+
+(custom-error? (merr/error {:type ::sub-custom-error-type}))
+;; => true
 ----
 
 == Integration

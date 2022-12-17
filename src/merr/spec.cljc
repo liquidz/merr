@@ -11,11 +11,11 @@
 (s/def ::cause any?)
 (s/def ::error-map (s/keys :opt-un [::type ::message ::data ::cause]))
 
-(s/fdef core/err?
+(s/fdef core/error?
   :args (s/cat :x any?)
   :ret boolean?)
 
-(s/fdef core/err
+(s/fdef core/error
   :args (s/cat :m (s/? ::error-map))
   :ret ::merr-error)
 

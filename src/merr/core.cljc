@@ -9,35 +9,35 @@
 (defrecord MerrError
   [type message data cause])
 
-(defn err?
+(defn error?
   "Returns `true` if x is `MerrError`.
 
   ```
-  => (err? \"foo\")
+  => (error? \"foo\")
   false
 
-  => (err? (err {:message \"foo\"}))
+  => (error? (error {:message \"foo\"}))
   true
   ```"
   [x]
   (instance? MerrError x))
 
-(defn err
+(defn error
   "Returns value as `MerrError`.
 
   **NOTE** Default error type is `:error`
 
   ```
-  => (:type (err {:message \"hello\"}))
+  => (:type (error {:message \"hello\"}))
   :error
 
-  => (:type (err {:type :custom-error :message \"hello\"}))
+  => (:type (error {:type :custom-error :message \"hello\"}))
   :custom-error
 
-  => (:data (err {:data {:foo \"bar\"}}))
+  => (:data (error {:data {:foo \"bar\"}}))
   {:foo \"bar\"}
   ```"
-  ([] (err {}))
+  ([] (error {}))
   ([{:keys [type message data cause]
      :or {type default-error-type} :as m}]
    (clojure.core/-> m
@@ -53,7 +53,7 @@
   (if (some #(% v) ignore-checkers)
     [v nil]
     `(clojure.core/let [v# ~v]
-       (if (err? v#) [nil v#] [v# nil]))))
+       (if (error? v#) [nil v#] [v# nil]))))
 
 (defmacro let
   "binding => binding-form init-expr
@@ -64,12 +64,12 @@
   ```
   => (let +err+ [a 1
   =>             b (inc a)]
-  =>   [a b (err? +err+)])
+  =>   [a b (error? +err+)])
   [1 2 false]
 
-  => (let +err+ [a (err {:message \"ERR\"})
+  => (let +err+ [a (error {:message \"ERR\"})
   =>             b (inc a)]
-  =>   [a b (err? +err+)])
+  =>   [a b (error? +err+)])
   [nil nil true]
   ```"
   {:style/indent 2}
@@ -93,41 +93,41 @@
   "Get error type.
 
   ```
-  => (type (err {:type :foo :message \"bar\"}))
+  => (type (error {:type :foo :message \"bar\"}))
   :foo
   ```"
   [e]
-  (when (err? e) (:type e)))
+  (when (error? e) (:type e)))
 
 (defn message
   "Get error message.
 
   ```
-  => (message (err {:type :foo :message \"bar\"}))
+  => (message (error {:type :foo :message \"bar\"}))
   \"bar\"
   ```"
   [e]
-  (when (err? e) (:message e)))
+  (when (error? e) (:message e)))
 
 (defn data
   "Get error custom data.
 
   ```
-  => (data (err {:message \"bar\" :data {:hello \"world\"}}))
+  => (data (error {:message \"bar\" :data {:hello \"world\"}}))
   {:hello \"world\"}
   ```"
   [e]
-  (when (err? e) (:data e)))
+  (when (error? e) (:data e)))
 
 (defn cause
   "Get error cause.
 
   ```
-  => (cause (err {:message \"foo\" :cause (err {:message \"bar\"})}))
-  (err {:message \"bar\"})
+  => (cause (error {:message \"foo\" :cause (error {:message \"bar\"})}))
+  (error {:message \"bar\"})
   ```"
   [e]
-  (when (err? e) (:cause e)))
+  (when (error? e) (:cause e)))
 
 (defmacro ->
   "Threads the expr through the forms. Inserts x as the
@@ -181,23 +181,23 @@
 
 (defn- ex->err
   [cljs? ex & [m]]
-  `(err {:type (or (:type ~m)
-                   (:merr/type (ex-data ~ex))
-                   default-error-type)
-         :message (or (:message ~m)
-                      (if ~cljs?
-                        (.-message ~ex)
-                        (.getMessage ~ex)))
-         :data (merge (:data ~m)
-                      (ex-data ~ex))
-         :cause ~ex}))
+  `(error {:type (or (:type ~m)
+                     (:merr/type (ex-data ~ex))
+                     default-error-type)
+           :message (or (:message ~m)
+                        (if ~cljs?
+                          (.-message ~ex)
+                          (.getMessage ~ex)))
+           :data (merge (:data ~m)
+                        (ex-data ~ex))
+           :cause ~ex}))
 
 #?(:clj (defmacro try
           "Returs `MerrError` when Exceptions/Errors are thrown.
 
           ```
           => (merr.core/try (throw (ex-info \"hello\" {})))
-          err?
+          error?
 
           => (type (merr.core/try {:type :test} (throw (ex-info \"hello\" {}))))
           :test
@@ -235,3 +235,11 @@
                 ~@body
                 (catch js/Error ~ex-sym
                   ~(ex->err true ex-sym m))))))
+
+(def ^:deprecated err?
+  "DEPRECATED"
+  error?)
+
+(def ^:deprecated err
+  "DEPRECATED"
+  error)
