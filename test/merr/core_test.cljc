@@ -3,7 +3,7 @@
    #?@(:clj  [[clojure.test :as t]
               [clojure.java.io :as io]
               [merr.core :as sut]
-              testdoc.core]
+              [testdoc.core]]
        :cljs [[cljs.test :as t :include-macros true]
               [merr.core :as sut :include-macros true]])))
 

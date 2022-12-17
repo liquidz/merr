@@ -34,7 +34,7 @@
   false
 
   => (derive ::derived ::custom)
-  nil?
+  nil
 
   => (custom-error? (merr.core/error {:type ::derived}))
   true
