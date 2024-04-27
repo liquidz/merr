@@ -13,7 +13,6 @@ test: test-clj test-bb test-cljs test-nbb ## Run all tests
 
 .PHONY: test-clj
 test-clj: ## Run clj tests
-	clojure -M:dev:1.9:test-clj
 	clojure -M:dev:1.10:test-clj
 	clojure -M:dev:test-clj
 
