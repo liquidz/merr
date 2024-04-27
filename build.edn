@@ -1,4 +1,6 @@
 {:lib com.github.liquidz/merr
  :description "Minimal and good enough error handling library for Clojure/ClojureScript"
  :version "1.0.{{git/commit-count}}"
+ :licenses [{:name "Eclipse Public License - v 1.0"
+             :url "https://www.eclipse.org/legal/epl-v10.html"}]
  :github-actions? true}
